@@ -1,60 +1,64 @@
 @import "tailwindcss";
 
-/* Rony Dress — Atelier Design Tokens (Derived strictly from logo gold #B89040 + Ivory + Deep Brown) */
+/* Rony Dress — Haute Couture Design System Tokens (Light & Dark Salon Modes) */
 :root {
-  --bg-primary: #FFF9F2;         /* Warm Atelier Ivory */
-  --bg-surface: #FAF2E8;         /* Soft Champagne Silk */
-  --bg-card: #FFFFFF;            /* Pure Studio Silk */
-  --border-subtle: #E6D8C7;      /* Fine Silk Border */
-  --text-primary: #3A2930;       /* Deep Brown */
-  --text-strong: #171317;        /* Soft Black */
-  --text-muted: #6E5B61;         /* Muted Espresso */
-  --brand-gold: #B89040;         /* Exact Logo Gold */
-  --brand-gold-hover: #9C7730;   /* Burnished Gold Hover */
-  --brand-champagne: #D7B98E;    /* Soft Champagne */
-  --brand-nude: #E8CFC5;         /* Atelier Nude */
-  --brand-rose: #C98F9B;         /* Dusty Rose */
-  --brand-brown: #3A2930;        /* Deep Brown */
-  --brand-black: #171317;        /* Soft Black */
+  --bg-primary: #FAF7F2;         /* Couture Alabaster */
+  --bg-surface: #F2ECE2;         /* Warm Silk Stone */
+  --bg-stage: #F5EFE6;           /* Salon Runway Surface */
+  --bg-card: #FFFFFF;
+  --border-subtle: #E2D8C9;      /* 1px Hairline Silk Border */
+  --text-primary: #1B1518;       /* Deep Espresso Obsidian */
+  --text-strong: #120E10;
+  --text-muted: #6B5D62;         /* Muted Taupe-Plum */
+  --brand-gold: #B89040;         /* Measured Rony Dress Logo Gold */
+  --brand-gold-hover: #98742D;   /* Burnished Brass Hover */
+  --brand-champagne: #D7B98E;
+  --brand-nude: #E8CFC5;
+  --brand-rose: #C98F9B;
+  --brand-brown: #3A2930;
+  --brand-black: #120E10;
+  --radius-ui: 4px;
 
-  --background: #FFF9F2;
-  --foreground: #3A2930;
-  --card: #FAF2E8;
-  --card-foreground: #3A2930;
-  --muted: #FAF2E8;
-  --muted-foreground: #6E5B61;
-  --border: #E6D8C7;
+  --background: #FAF7F2;
+  --foreground: #1B1518;
+  --card: #F2ECE2;
+  --card-foreground: #1B1518;
+  --muted: #F2ECE2;
+  --muted-foreground: #6B5D62;
+  --border: #E2D8C9;
   --ring: #B89040;
   --primary: #B89040;
-  --primary-foreground: #FFF9F2;
+  --primary-foreground: #FAF7F2;
 }
 
 [data-theme="dark"] {
-  --bg-primary: #171317;         /* Soft Atelier Black */
-  --bg-surface: #221B20;         /* Velvet Espresso Card */
-  --bg-card: #2A2127;            /* Elevated Silk Dark */
-  --border-subtle: #3B2E36;      /* Dark Champagne Seam */
-  --text-primary: #FFF9F2;       /* Atelier Ivory */
-  --text-strong: #FFF9F2;
-  --text-muted: #CBBAB1;         /* Muted Nude */
-  --brand-gold: #D7B98E;         /* Luminous Champagne Gold */
-  --brand-gold-hover: #E5CBA5;   /* Luminous Hover */
+  --bg-primary: #0E0B0E;         /* Deep Obsidian Salon Velvet */
+  --bg-surface: #171216;         /* Elevated Velvet Card */
+  --bg-stage: #130F12;           /* Dark Salon Stage */
+  --bg-card: #1D171C;
+  --border-subtle: #2C2329;      /* Dark Brass-Plum Seam */
+  --text-primary: #FAF7F2;       /* Couture Alabaster */
+  --text-strong: #FFFFFF;
+  --text-muted: #AC9DA3;         /* Muted Champagne-Grey */
+  --brand-gold: #D7B98E;         /* Luminous Champagne Brass */
+  --brand-gold-hover: #E5CBA5;
   --brand-champagne: #B89040;
   --brand-nude: #3A2930;
   --brand-rose: #C98F9B;
-  --brand-brown: #FFF9F2;
-  --brand-black: #0E0B0E;
+  --brand-brown: #FAF7F2;
+  --brand-black: #080608;
+  --radius-ui: 4px;
 
-  --background: #171317;
-  --foreground: #FFF9F2;
-  --card: #221B20;
-  --card-foreground: #FFF9F2;
-  --muted: #221B20;
-  --muted-foreground: #CBBAB1;
-  --border: #3B2E36;
+  --background: #0E0B0E;
+  --foreground: #FAF7F2;
+  --card: #171216;
+  --card-foreground: #FAF7F2;
+  --muted: #171216;
+  --muted-foreground: #AC9DA3;
+  --border: #2C2329;
   --ring: #D7B98E;
   --primary: #D7B98E;
-  --primary-foreground: #171317;
+  --primary-foreground: #0E0B0E;
 }
 
 @theme inline {
@@ -90,7 +94,7 @@ body {
 
 .font-editorial {
   font-family: var(--font-editorial), Georgia, serif;
-  line-height: 1.08;
+  line-height: 1.06;
   letter-spacing: -0.015em;
 }
 
@@ -104,13 +108,13 @@ body {
 
 .micro-label {
   font-family: var(--font-en), system-ui, sans-serif;
-  font-size: 11px;
+  font-size: 10.5px;
   font-weight: 600;
-  letter-spacing: 0.24em;
+  letter-spacing: 0.25em;
   text-transform: uppercase;
 }
 
-/* Zero-flicker light/dark SVG/image toggling */
+/* Instant zero-hydration-mismatch logo switching */
 [data-theme="dark"] .show-in-light {
   display: none !important;
 }
@@ -139,18 +143,12 @@ body {
   animation: drawerSlideInRight 0.28s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
-/* React <ViewTransition share="morph" /> — smooth dress enlargement into /dress/[code] */
+/* React <ViewTransition share="morph" /> — smooth cutout gown enlargement into /dress/[code] */
 ::view-transition-group(.morph) {
-  animation-duration: 420ms;
+  animation-duration: 440ms;
   animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 ::view-transition-image-pair(.morph) {
-  animation-name: dressMorphSoft;
-}
-
-@keyframes dressMorphSoft {
-  35% {
-    filter: drop-shadow(0 24px 36px rgba(58, 41, 48, 0.18));
-  }
+  isolation: auto;
 }

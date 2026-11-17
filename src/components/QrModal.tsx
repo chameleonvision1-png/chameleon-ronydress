@@ -104,7 +104,7 @@ export function QrModal({
       aria-label={title}
     >
       <div
-        className="relative w-full max-w-sm rounded-md border border-[var(--border-subtle)] bg-[var(--bg-primary)] p-6 text-center shadow-2xl"
+        className="relative w-full max-w-sm rounded-[4px] border border-[var(--border-subtle)] bg-[var(--bg-primary)] p-6 text-center shadow-2xl"
         onClick={(e) => e.stopPropagation()}
         data-modal-scroll
       >
@@ -112,9 +112,9 @@ export function QrModal({
           type="button"
           onClick={onClose}
           aria-label="إغلاق"
-          className="absolute top-3 left-3 flex h-9 w-9 items-center justify-center rounded-full border border-[var(--border-subtle)] text-[var(--text-primary)] hover:border-[var(--brand-gold)]"
+          className="absolute top-3 left-3 flex size-9 items-center justify-center rounded-[4px] border border-[var(--border-subtle)] text-[var(--text-primary)] hover:border-[var(--brand-gold)]"
         >
-          <X className="h-4 w-4" />
+          <X className="size-4" strokeWidth={1.5} />
         </button>
 
         <p className="micro-label text-[var(--brand-gold)]">RONY DRESS LINK HUB</p>

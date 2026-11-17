@@ -3,7 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { ViewTransition } from "react";
-import { Eye, Heart } from "lucide-react";
+import { ArrowLeft, Heart } from "lucide-react";
 import type { Dress } from "@/lib/types";
 import { OCCASION_LABELS_AR, STATUS_LABELS_AR } from "@/lib/whatsapp";
 import { formatPrice } from "@/lib/utils";
@@ -11,106 +11,119 @@ import { useShortlist } from "./ShortlistProvider";
 
 export function DressCard({ dress }: { dress: Dress }) {
   const { hasItem, toggleItem } = useShortlist();
-  const [hovered, setHovered] = React.useState(false);
-
   const front = dress.shots.find((s) => s.angle === "front") || dress.shots[0];
-  const alt = dress.shots.find((s) => s.angle === "three-quarter") || dress.shots[1];
+  const back =
+    dress.shots.find((s) => s.angle === "back") ||
+    dress.shots.find((s) => s.angle === "three-quarter");
   const saved = hasItem(dress.code);
 
   return (
-    <article
-      className="group flex flex-col overflow-hidden rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-surface)] transition hover:border-[var(--brand-gold)]"
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-    >
-      <div className="relative aspect-[2/3] w-full overflow-hidden bg-[#F7F1E8]">
-        <Link href={`/dress/${dress.code}`} className="block h-full w-full">
+    <article className="group flex flex-col">
+      {/* 3:4 Frameless Couture Studio Portrait (Matches MO WORLD ProductCard Architecture) */}
+      <div className="relative aspect-[3/4] w-full overflow-hidden rounded-[4px] border border-[var(--border-subtle)] bg-[var(--bg-stage)] transition-colors group-hover:border-[var(--brand-gold)]/70">
+        <Link href={`/dress/${dress.code}`} className="block h-full w-full p-2.5 sm:p-3.5">
           <ViewTransition name={`dress-${dress.code}`} share="morph" default="none">
             <div className="relative h-full w-full">
+              {/* Grounded elliptical floor shadow under cutout gown */}
+              <span
+                aria-hidden="true"
+                className="pointer-events-none absolute bottom-1 left-1/2 h-4 w-[62%] -translate-x-1/2 rounded-full bg-[radial-gradient(ellipse_at_center,rgba(18,14,16,0.32)_0%,transparent_72%)]"
+              />
               {front && (
                 <img
                   src={front.src}
                   alt={dress.nameAr}
-                  className="h-full w-full object-cover object-top transition duration-500 group-hover:scale-[1.03]"
+                  loading="lazy"
+                  className={`h-full w-full object-contain transition-opacity duration-300 ${
+                    back ? "group-hover:opacity-0" : ""
+                  }`}
                 />
               )}
-              {alt && hovered && (
+              {back && (
                 <img
-                  src={alt.src}
-                  alt={`${dress.nameAr} — زاوية أخرى`}
-                  className="absolute inset-0 h-full w-full object-cover object-top transition-opacity duration-300"
+                  src={back.src}
+                  alt={`${dress.nameAr} — الظهر`}
+                  loading="lazy"
+                  className="pointer-events-none absolute inset-0 h-full w-full object-contain p-2.5 opacity-0 transition-opacity duration-300 group-hover:opacity-100 sm:p-3.5"
                 />
               )}
             </div>
           </ViewTransition>
         </Link>
 
-        <span className="pointer-events-none absolute top-2.5 right-2.5 rounded bg-[#171317]/80 px-2 py-0.5 font-en text-[10px] font-semibold tracking-wider text-[#FFF9F2]">
-          {dress.code}
-        </span>
+        {/* Minimal Editorial Top Badges */}
+        <div className="pointer-events-none absolute inset-x-2 top-2 flex items-start justify-between gap-1.5">
+          <span className="rounded-[3px] border border-[var(--border-subtle)] bg-[var(--bg-primary)]/90 px-2 py-0.5 text-[9.5px] font-semibold text-[var(--text-primary)]">
+            {STATUS_LABELS_AR[dress.status] || "متاح للإيجار"}
+          </span>
+          <span
+            dir="ltr"
+            className="rounded-[3px] border border-[var(--border-subtle)] bg-[var(--bg-primary)]/90 px-1.5 py-0.5 font-en text-[9px] font-bold tracking-[0.16em] text-[var(--brand-gold)]"
+          >
+            {dress.code}
+          </span>
+        </div>
 
-        <button
-          type="button"
-          onClick={() =>
-            toggleItem({
-              code: dress.code,
-              nameAr: dress.nameAr,
-              nameEn: dress.nameEn,
-              image: front?.src || "",
-              status: dress.status,
-              occasionLabel: OCCASION_LABELS_AR[dress.occasions[0]] || "مناسبات",
-            })
-          }
-          aria-label={saved ? "إزالة من اختياراتي" : "حفظ في اختياراتي"}
-          className={`absolute top-2.5 left-2.5 flex h-8 w-8 items-center justify-center rounded-full border backdrop-blur-xs transition ${
-            saved
-              ? "border-[var(--brand-gold)] bg-[var(--brand-gold)] text-[#FFF9F2]"
-              : "border-[#3A2930]/15 bg-[#FFF9F2]/88 text-[#3A2930] hover:border-[var(--brand-gold)]"
-          }`}
-        >
-          <Heart className={`h-3.5 w-3.5 ${saved ? "fill-current" : ""}`} />
-        </button>
+        {/* Bottom Quick Action Bar Inside Frame */}
+        <div className="absolute inset-x-2 bottom-2 flex items-center justify-between gap-1.5">
+          <button
+            type="button"
+            onClick={() =>
+              toggleItem({
+                code: dress.code,
+                nameAr: dress.nameAr,
+                nameEn: dress.nameEn,
+                image: front?.src || "",
+                status: dress.status,
+                occasionLabel: OCCASION_LABELS_AR[dress.occasions[0]] || "مناسبات",
+              })
+            }
+            aria-label={saved ? "إزالة من اختياراتي" : "حفظ للبروفة"}
+            className={`flex size-7.5 items-center justify-center rounded-[3px] border backdrop-blur-xs transition-colors ${
+              saved
+                ? "border-[var(--brand-gold)] bg-[var(--brand-gold)] text-[#FAF7F2]"
+                : "border-[var(--border-subtle)] bg-[var(--bg-primary)]/90 text-[var(--text-primary)] hover:border-[var(--brand-gold)]"
+            }`}
+          >
+            <Heart className={`size-3.5 ${saved ? "fill-current" : ""}`} strokeWidth={1.5} />
+          </button>
 
-        <span className="pointer-events-none absolute bottom-2.5 right-2.5 rounded-full bg-[#FFF9F2]/92 px-2.5 py-0.5 text-[10px] font-semibold text-[#3A2930]">
-          {STATUS_LABELS_AR[dress.status] || "متاح"}
-        </span>
+          <Link
+            href={`/dress/${dress.code}`}
+            className="inline-flex h-7.5 items-center gap-1 rounded-[3px] border border-[var(--border-subtle)] bg-[var(--bg-primary)]/92 px-2.5 text-[10px] font-semibold text-[var(--text-strong)] backdrop-blur-xs transition-colors hover:border-[var(--brand-gold)] hover:bg-[var(--brand-gold)] hover:text-[#FAF7F2]"
+          >
+            <span>٣٦٠° والتفاصيل</span>
+            <ArrowLeft className="size-3" strokeWidth={1.5} />
+          </Link>
+        </div>
       </div>
 
-      <div className="flex flex-1 flex-col justify-between p-3.5">
-        <div>
-          <p className="text-[11px] font-medium text-[var(--brand-gold)]">
-            {dress.occasions.map((o) => OCCASION_LABELS_AR[o]).slice(0, 2).join(" • ")}
-          </p>
+      {/* Clean Architectural Caption Underneath */}
+      <div className="mt-2.5 flex items-start justify-between gap-2">
+        <div className="min-w-0">
           <Link href={`/dress/${dress.code}`}>
-            <h3 className="mt-1 line-clamp-1 text-sm font-bold text-[var(--text-strong)] group-hover:text-[var(--brand-gold)]">
+            <h3 className="truncate text-xs font-bold text-[var(--text-strong)] transition-colors group-hover:text-[var(--brand-gold)] sm:text-sm">
               {dress.nameAr}
             </h3>
           </Link>
-          <p className="mt-1 text-xs text-[var(--text-muted)]">
+          <p className="mt-0.5 truncate text-[11px] text-[var(--text-muted)]">
+            {dress.occasions.map((o) => OCCASION_LABELS_AR[o]).slice(0, 2).join(" · ")}
+            {" — "}
             {dress.showPrice && dress.rentPrice
-              ? `الإيجار: ${formatPrice(dress.rentPrice)}`
-              : "اسألي عن التوفر وسعر الإيجار / التفصيل"}
+              ? formatPrice(dress.rentPrice)
+              : "إيجار وتفصيل"}
           </p>
         </div>
 
-        <div className="mt-3 flex items-center justify-between gap-2 border-t border-[var(--border-subtle)] pt-3">
-          <div className="flex items-center gap-1">
-            {dress.colors.slice(0, 3).map((c) => (
-              <span
-                key={c.nameAr}
-                title={c.nameAr}
-                style={{ backgroundColor: c.hex }}
-                className="h-3.5 w-3.5 rounded-full border border-[var(--border-subtle)]"
-              />
-            ))}
-          </div>
-          <Link
-            href={`/dress/${dress.code}`}
-            className="inline-flex items-center gap-1 text-xs font-semibold text-[var(--brand-gold)] hover:underline"
-          >
-            <Eye className="h-3.5 w-3.5" />
-            <span>استعرضي ٣٦٠°</span>
-          </Link>
+        <div className="mt-1 flex shrink-0 items-center gap-1">
+          {dress.colors.slice(0, 2).map((c) => (
+            <span
+              key={c.nameAr}
+              title={c.nameAr}
+              style={{ backgroundColor: c.hex }}
+              className="size-3 rounded-full border border-[var(--border-subtle)]"
+            />
+          ))}
         </div>
       </div>
     </article>

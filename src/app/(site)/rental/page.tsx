@@ -4,10 +4,10 @@ import {
   CalendarCheck,
   CheckCircle2,
   Clock,
+  Droplets,
   RefreshCw,
   Ruler,
   ShieldCheck,
-  Sparkles,
 } from "lucide-react";
 import { publicDB } from "@/lib/db";
 
@@ -15,7 +15,8 @@ export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "نظام وشروط الإيجار",
-  description: "تفاصيل كيفية الحجز، مدة الإيجار، مبلغ التأمين المسترد، التنظيف، وتعديل المقاس في أتيليه Rony Dress.",
+  description:
+    "تفاصيل كيفية الحجز، مدة الإيجار، مبلغ التأمين المسترد، التنظيف، وتعديل المقاس في أتيليه Rony Dress.",
 };
 
 export default async function RentalPolicyPage() {
@@ -43,7 +44,7 @@ export default async function RentalPolicyPage() {
       desc: settings.alterationPolicyAr,
     },
     {
-      icon: Sparkles,
+      icon: Droplets,
       title: "٥. التنظيف والدراي كلين",
       desc: settings.cleaningPolicyAr,
     },
@@ -57,8 +58,10 @@ export default async function RentalPolicyPage() {
   return (
     <div className="mx-auto max-w-5xl px-4 py-10 md:px-8 md:py-14">
       <div className="border-b border-[var(--border-subtle)] pb-6">
-        <p className="micro-label text-[var(--brand-gold)]">ATELIER RENTAL GUIDE</p>
-        <h1 className="mt-1 text-2xl font-bold text-[var(--text-strong)] md:text-4xl">
+        <p dir="ltr" className="micro-label text-[var(--brand-gold)]">
+          ATELIER RENTAL GUIDE
+        </p>
+        <h1 className="mt-1.5 text-2xl font-bold text-[var(--text-strong)] md:text-4xl">
           نظام الإيجار والسياسات في Rony Dress
         </h1>
         <p className="mt-2 max-w-2xl text-sm text-[var(--text-muted)]">
@@ -66,17 +69,17 @@ export default async function RentalPolicyPage() {
         </p>
       </div>
 
-      <div className="mt-8 grid grid-cols-1 gap-5 md:grid-cols-2">
+      <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-2">
         {policies.map((p) => {
           const Icon = p.icon;
           return (
             <div
               key={p.title}
-              className="rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-6"
+              className="rounded-[4px] border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-6"
             >
               <div className="flex items-center gap-2.5">
-                <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[var(--brand-gold)]/15 text-[var(--brand-gold)]">
-                  <Icon className="h-4 w-4" />
+                <span className="flex size-9 items-center justify-center rounded-[4px] border border-[var(--border-subtle)] bg-[var(--bg-primary)] text-[var(--brand-gold)]">
+                  <Icon className="size-4" strokeWidth={1.5} />
                 </span>
                 <h2 className="text-base font-bold text-[var(--text-strong)]">{p.title}</h2>
               </div>
@@ -86,12 +89,17 @@ export default async function RentalPolicyPage() {
         })}
       </div>
 
-      <div className="mt-10 flex flex-col items-center justify-between gap-4 rounded-xl border border-[var(--brand-gold)]/40 bg-[#3A2930] p-6 text-[#FFF9F2] sm:flex-row md:p-8">
+      <div className="mt-10 flex flex-col items-center justify-between gap-4 rounded-[4px] border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-6 sm:flex-row md:p-8">
         <div className="flex items-start gap-3">
-          <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-[#B89040]" />
+          <CheckCircle2
+            className="mt-0.5 size-5 shrink-0 text-[var(--brand-gold)]"
+            strokeWidth={1.5}
+          />
           <div>
-            <h3 className="text-base font-bold">جاهزة لاختيار فستان مناسبتك؟</h3>
-            <p className="mt-1 text-xs text-[#E8CFC5]">
+            <h3 className="text-base font-bold text-[var(--text-strong)]">
+              جاهزة لاختيار فستان مناسبتك؟
+            </h3>
+            <p className="mt-1 text-xs text-[var(--text-muted)]">
               تصفحي الفساتين وتأكدي من توفر تاريخك أو احجزي موعد بروفة مباشرة في الأتيليه.
             </p>
           </div>
@@ -99,13 +107,13 @@ export default async function RentalPolicyPage() {
         <div className="flex shrink-0 gap-2.5">
           <Link
             href="/collection"
-            className="rounded bg-[#B89040] px-5 py-2.5 text-xs font-bold text-[#FFF9F2]"
+            className="inline-flex h-10 items-center justify-center rounded-[4px] bg-[var(--brand-gold)] px-5 text-xs font-bold text-[#FAF7F2]"
           >
             شاهدي الكولكشن
           </Link>
           <Link
             href="/booking"
-            className="rounded border border-[#D7B98E]/50 px-5 py-2.5 text-xs font-bold text-[#FFF9F2]"
+            className="inline-flex h-10 items-center justify-center rounded-[4px] border border-[var(--border-subtle)] bg-[var(--bg-primary)] px-5 text-xs font-bold text-[var(--text-strong)] hover:border-[var(--brand-gold)]"
           >
             حجز موعد
           </Link>

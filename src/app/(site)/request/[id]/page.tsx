@@ -38,7 +38,7 @@ export default async function RequestTrackingPage({
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-12 md:px-8">
-      <div className="rounded-xl border border-[var(--brand-gold)]/45 bg-[var(--bg-surface)] p-6 shadow-sm md:p-8">
+      <div className="rounded-[4px] border border-[var(--brand-gold)]/45 bg-[var(--bg-surface)] p-6 md:p-8">
         <div className="flex items-center gap-3">
           <CheckCircle2 className="h-7 w-7 text-[var(--brand-gold)]" />
           <div>
@@ -49,7 +49,7 @@ export default async function RequestTrackingPage({
           </div>
         </div>
 
-        <div className="mt-6 space-y-3 rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-primary)] p-5 text-sm">
+        <div className="mt-6 space-y-3 rounded-[4px] border border-[var(--border-subtle)] bg-[var(--bg-primary)] p-5 text-sm">
           {rental ? (
             <>
               <div className="flex items-center justify-between border-b border-[var(--border-subtle)] pb-2.5">

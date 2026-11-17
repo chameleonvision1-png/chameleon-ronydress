@@ -119,11 +119,11 @@ export function buildDresses(): Dress[] {
       orbitOrder: 1,
       isFeatured: true,
       shots: [
-        { src: "/images/dresses/rd-01-front.webp", angle: "front", labelAr: "أمامي", w: 640, h: 960 },
-        { src: "/images/dresses/rd-01-three-quarter.webp", angle: "three-quarter", labelAr: "زاوية ٣/٤", w: 640, h: 960 },
-        { src: "/images/dresses/rd-01-side.webp", angle: "side", labelAr: "جانبي", w: 640, h: 960 },
-        { src: "/images/dresses/rd-01-back.webp", angle: "back", labelAr: "خلفي", w: 640, h: 960 },
-        { src: "/images/dresses/rd-01-detail.webp", angle: "detail", labelAr: "تفاصيل الكريستال والدرابيه", w: 640, h: 960 },
+        { src: "/images/cutouts/rd-01-front.webp", angle: "front", labelAr: "أمامي", w: 640, h: 960 },
+        { src: "/images/cutouts/rd-01-three-quarter.webp", angle: "three-quarter", labelAr: "زاوية ٣/٤", w: 640, h: 960 },
+        { src: "/images/cutouts/rd-01-side.webp", angle: "side", labelAr: "جانبي", w: 640, h: 960 },
+        { src: "/images/cutouts/rd-01-back.webp", angle: "back", labelAr: "خلفي", w: 640, h: 960 },
+        { src: "/images/dresses/rd-01-detail.webp", angle: "detail", labelAr: "تفاصيل الكريستال والدرابيه", w: 720, h: 960 },
       ],
     },
     {
@@ -156,10 +156,10 @@ export function buildDresses(): Dress[] {
       orbitOrder: 2,
       isFeatured: true,
       shots: [
-        { src: "/images/dresses/rd-02-front.webp", angle: "front", labelAr: "أمامي", w: 640, h: 960 },
-        { src: "/images/dresses/rd-02-three-quarter.webp", angle: "three-quarter", labelAr: "زاوية ٣/٤", w: 640, h: 960 },
-        { src: "/images/dresses/rd-02-back.webp", angle: "back", labelAr: "خلفي", w: 640, h: 960 },
-        { src: "/images/dresses/rd-02-detail.webp", angle: "detail", labelAr: "تفاصيل التطريز والفرنج", w: 640, h: 960 },
+        { src: "/images/cutouts/rd-02-front.webp", angle: "front", labelAr: "أمامي", w: 640, h: 960 },
+        { src: "/images/cutouts/rd-02-three-quarter.webp", angle: "three-quarter", labelAr: "زاوية ٣/٤", w: 640, h: 960 },
+        { src: "/images/cutouts/rd-02-back.webp", angle: "back", labelAr: "خلفي", w: 640, h: 960 },
+        { src: "/images/dresses/rd-02-detail.webp", angle: "detail", labelAr: "تفاصيل التطريز والفرنج", w: 720, h: 960 },
       ],
     },
     {
@@ -189,10 +189,10 @@ export function buildDresses(): Dress[] {
       orbitOrder: 3,
       isFeatured: true,
       shots: [
-        { src: "/images/dresses/rd-03-front.webp", angle: "front", labelAr: "أمامي", w: 640, h: 960 },
-        { src: "/images/dresses/rd-03-three-quarter.webp", angle: "three-quarter", labelAr: "زاوية ٣/٤", w: 640, h: 960 },
-        { src: "/images/dresses/rd-03-back.webp", angle: "back", labelAr: "خلفي بالكاب", w: 640, h: 960 },
-        { src: "/images/dresses/rd-03-detail.webp", angle: "detail", labelAr: "تفاصيل البروش الذهبي", w: 640, h: 960 },
+        { src: "/images/cutouts/rd-03-front.webp", angle: "front", labelAr: "أمامي", w: 640, h: 960 },
+        { src: "/images/cutouts/rd-03-three-quarter.webp", angle: "three-quarter", labelAr: "زاوية ٣/٤", w: 640, h: 960 },
+        { src: "/images/cutouts/rd-03-back.webp", angle: "back", labelAr: "خلفي بالكاب", w: 640, h: 960 },
+        { src: "/images/dresses/rd-03-detail.webp", angle: "detail", labelAr: "تفاصيل البروش الذهبي", w: 720, h: 960 },
       ],
     },
     {
@@ -222,10 +222,10 @@ export function buildDresses(): Dress[] {
       orbitOrder: 4,
       isFeatured: true,
       shots: [
-        { src: "/images/dresses/rd-04-front.webp", angle: "front", labelAr: "أمامي", w: 640, h: 960 },
-        { src: "/images/dresses/rd-04-three-quarter.webp", angle: "three-quarter", labelAr: "زاوية ٣/٤", w: 640, h: 960 },
-        { src: "/images/dresses/rd-04-back.webp", angle: "back", labelAr: "خلفي", w: 640, h: 960 },
-        { src: "/images/dresses/rd-04-detail.webp", angle: "detail", labelAr: "تفاصيل الخرز والبليسيه", w: 640, h: 960 },
+        { src: "/images/cutouts/rd-04-front.webp", angle: "front", labelAr: "أمامي", w: 640, h: 960 },
+        { src: "/images/cutouts/rd-04-three-quarter.webp", angle: "three-quarter", labelAr: "زاوية ٣/٤", w: 640, h: 960 },
+        { src: "/images/cutouts/rd-04-back.webp", angle: "back", labelAr: "خلفي", w: 640, h: 960 },
+        { src: "/images/dresses/rd-04-detail.webp", angle: "detail", labelAr: "تفاصيل الخرز والبليسيه", w: 720, h: 960 },
       ],
     },
     {
@@ -255,9 +255,9 @@ export function buildDresses(): Dress[] {
       orbitOrder: 5,
       isFeatured: true,
       shots: [
-        { src: "/images/dresses/rd-05-front.webp", angle: "front", labelAr: "أمامي", w: 640, h: 960 },
-        { src: "/images/dresses/rd-05-three-quarter.webp", angle: "three-quarter", labelAr: "زاوية ٣/٤", w: 640, h: 960 },
-        { src: "/images/dresses/rd-05-back.webp", angle: "back", labelAr: "خلفي", w: 640, h: 960 },
+        { src: "/images/cutouts/rd-05-front.webp", angle: "front", labelAr: "أمامي", w: 640, h: 960 },
+        { src: "/images/cutouts/rd-05-three-quarter.webp", angle: "three-quarter", labelAr: "زاوية ٣/٤", w: 640, h: 960 },
+        { src: "/images/cutouts/rd-05-back.webp", angle: "back", labelAr: "خلفي", w: 640, h: 960 },
       ],
     },
     {
@@ -287,9 +287,9 @@ export function buildDresses(): Dress[] {
       orbitOrder: 6,
       isFeatured: false,
       shots: [
-        { src: "/images/dresses/rd-06-front.webp", angle: "front", labelAr: "أمامي", w: 640, h: 960 },
-        { src: "/images/dresses/rd-06-three-quarter.webp", angle: "three-quarter", labelAr: "زاوية ٣/٤", w: 640, h: 960 },
-        { src: "/images/dresses/rd-06-back.webp", angle: "back", labelAr: "خلفي", w: 640, h: 960 },
+        { src: "/images/cutouts/rd-06-front.webp", angle: "front", labelAr: "أمامي", w: 640, h: 960 },
+        { src: "/images/cutouts/rd-06-three-quarter.webp", angle: "three-quarter", labelAr: "زاوية ٣/٤", w: 640, h: 960 },
+        { src: "/images/cutouts/rd-06-back.webp", angle: "back", labelAr: "خلفي", w: 640, h: 960 },
       ],
     },
     {
@@ -319,9 +319,9 @@ export function buildDresses(): Dress[] {
       orbitOrder: 7,
       isFeatured: true,
       shots: [
-        { src: "/images/dresses/rd-07-front.webp", angle: "front", labelAr: "أمامي", w: 640, h: 960 },
-        { src: "/images/dresses/rd-07-three-quarter.webp", angle: "three-quarter", labelAr: "زاوية ٣/٤", w: 640, h: 960 },
-        { src: "/images/dresses/rd-07-back.webp", angle: "back", labelAr: "خلفي والذيل", w: 640, h: 960 },
+        { src: "/images/cutouts/rd-07-front.webp", angle: "front", labelAr: "أمامي", w: 640, h: 960 },
+        { src: "/images/cutouts/rd-07-three-quarter.webp", angle: "three-quarter", labelAr: "زاوية ٣/٤", w: 640, h: 960 },
+        { src: "/images/cutouts/rd-07-back.webp", angle: "back", labelAr: "خلفي والذيل", w: 640, h: 960 },
       ],
     },
     {
@@ -354,9 +354,9 @@ export function buildDresses(): Dress[] {
       orbitOrder: 8,
       isFeatured: false,
       shots: [
-        { src: "/images/dresses/rd-08-front.webp", angle: "front", labelAr: "أمامي", w: 640, h: 960 },
-        { src: "/images/dresses/rd-08-three-quarter.webp", angle: "three-quarter", labelAr: "زاوية ٣/٤", w: 640, h: 960 },
-        { src: "/images/dresses/rd-08-back.webp", angle: "back", labelAr: "خلفي بالباكستنشن", w: 640, h: 960 },
+        { src: "/images/cutouts/rd-08-front.webp", angle: "front", labelAr: "أمامي", w: 640, h: 960 },
+        { src: "/images/cutouts/rd-08-three-quarter.webp", angle: "three-quarter", labelAr: "زاوية ٣/٤", w: 640, h: 960 },
+        { src: "/images/cutouts/rd-08-back.webp", angle: "back", labelAr: "خلفي بالباكستنشن", w: 640, h: 960 },
       ],
     },
   ];
@@ -364,7 +364,7 @@ export function buildDresses(): Dress[] {
 
 export function buildSeed(): DB {
   return {
-    catalogVersion: 1,
+    catalogVersion: 2,
     settings: buildDefaultSettings(),
     categories: buildCategories(),
     dresses: buildDresses(),

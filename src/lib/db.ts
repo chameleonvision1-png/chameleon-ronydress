@@ -164,11 +164,12 @@ function migrateIfNeeded(db: DB): { db: DB; migrated: boolean } {
     db.blockedDates = [];
     migrated = true;
   }
-  if ((db.catalogVersion ?? 0) < 1) {
+  if ((db.catalogVersion ?? 0) < 2) {
     const seed = buildSeed();
+    const customDresses = (db.dresses || []).filter((d) => !d.id.startsWith("dress-rd-0"));
     db.categories = seed.categories;
-    db.dresses = seed.dresses;
-    db.catalogVersion = 1;
+    db.dresses = [...seed.dresses, ...customDresses];
+    db.catalogVersion = 2;
     migrated = true;
   }
   return { db, migrated };

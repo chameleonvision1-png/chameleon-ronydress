@@ -3,7 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { ViewTransition } from "react";
-import { ChevronLeft, ChevronRight, Eye, Heart, RotateCw } from "lucide-react";
+import { ArrowLeft, ChevronLeft, ChevronRight, Heart, Pause, Play } from "lucide-react";
 import type { Dress } from "@/lib/types";
 import { OCCASION_LABELS_AR, STATUS_LABELS_AR } from "@/lib/whatsapp";
 import { useShortlist } from "./ShortlistProvider";
@@ -18,26 +18,44 @@ function normAngle(deg: number): number {
   return a;
 }
 
-const AUTO_SPEED_DEG_PER_MS = 0.011;
+function clamp(v: number, min: number, max: number): number {
+  return v < min ? min : v > max ? max : v;
+}
+
+const AUTO_SPEED_DEG_PER_MS = 0.0105;
+const ELLIPSE_FLATTEN = 0.175;
+
+const TICKS_72 = Array.from({ length: 72 }, (_, i) => i * 5);
 
 export function AtelierOrbitCarousel({ dresses }: AtelierOrbitCarouselProps) {
+  const uid = React.useId().replace(/[^a-zA-Z0-9_-]/g, "");
   const count = dresses.length;
   const stageRef = React.useRef<HTMLDivElement | null>(null);
+  const floorDialRef = React.useRef<SVGGElement | null>(null);
   const slotRefs = React.useRef<(HTMLDivElement | null)[]>([]);
+  const shadowRefs = React.useRef<(HTMLSpanElement | null)[]>([]);
   const frontImgRefs = React.useRef<(HTMLImageElement | null)[]>([]);
   const tqImgRefs = React.useRef<(HTMLImageElement | null)[]>([]);
   const backImgRefs = React.useRef<(HTMLImageElement | null)[]>([]);
 
   const [frontIndex, setFrontIndex] = React.useState(0);
   const [extraAnglesReady, setExtraAnglesReady] = React.useState(false);
-  const [dims, setDims] = React.useState({ w: 960, h: 460, cardW: 236, cardH: 354 });
   const [isAutoPaused, setIsAutoPaused] = React.useState(false);
+  const [dims, setDims] = React.useState({
+    w: 1180,
+    stageH: 438,
+    gownW: 273,
+    gownH: 410,
+    radiusX: 450,
+    floorY: 345,
+  });
 
   const { hasItem, toggleItem } = useShortlist();
 
   const stateRef = React.useRef({
     theta: 0,
     velocity: 0,
+    sway: 0,
     targetTheta: null as number | null,
     dragging: false,
     dragMoved: false,
@@ -51,14 +69,14 @@ export function AtelierOrbitCarousel({ dresses }: AtelierOrbitCarouselProps) {
     raf: 0,
     lastFrame: 0,
     frontIdx: 0,
-    radiusX: 340,
+    radiusX: 390,
   });
 
   React.useEffect(() => {
     const id =
       typeof window !== "undefined" && "requestIdleCallback" in window
-        ? window.requestIdleCallback(() => setExtraAnglesReady(true), { timeout: 600 })
-        : setTimeout(() => setExtraAnglesReady(true), 400);
+        ? window.requestIdleCallback(() => setExtraAnglesReady(true), { timeout: 550 })
+        : setTimeout(() => setExtraAnglesReady(true), 360);
     return () => {
       if (typeof window !== "undefined" && "cancelIdleCallback" in window && typeof id === "number") {
         window.cancelIdleCallback(id);
@@ -74,57 +92,91 @@ export function AtelierOrbitCarousel({ dresses }: AtelierOrbitCarouselProps) {
     const updateDims = () => {
       const rect = el.getBoundingClientRect();
       const w = Math.max(320, Math.round(rect.width));
+      const vh = typeof window !== "undefined" ? window.innerHeight : 880;
       const isMobile = w < 640;
-      const cardW = isMobile ? Math.min(182, Math.round(w * 0.46)) : Math.min(244, Math.round(w * 0.23));
-      const cardH = Math.round(cardW * 1.5);
-      const radiusX = isMobile ? Math.round(w * 0.34) : Math.min(430, Math.round(w * 0.36));
+
+      // Fit entire hero cleanly inside 100svh (900px desktop / 844px mobile) with zero dead air
+      const maxGownH = isMobile
+        ? clamp(Math.round(vh * 0.40), 268, 340)
+        : clamp(Math.round(vh * 0.455), 320, 420);
+      const gownH = maxGownH;
+      const gownW = Math.round(gownH * (2 / 3));
+      const radiusX = isMobile
+        ? Math.min(Math.round(w * 0.375), 166)
+        : Math.min(Math.round(w * 0.385), 460);
+      const radiusY = Math.round(radiusX * ELLIPSE_FLATTEN);
+      const stageH = gownH + (isMobile ? 24 : 28);
+      const floorY = stageH - radiusY - (isMobile ? 12 : 14);
+
       stateRef.current.radiusX = radiusX;
-      setDims({ w, h: cardH + (isMobile ? 76 : 92), cardW, cardH });
+      setDims({ w, stageH, gownW, gownH, radiusX, floorY });
     };
     updateDims();
     const ro = new ResizeObserver(updateDims);
     ro.observe(el);
-    return () => ro.disconnect();
+    window.addEventListener("resize", updateDims);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", updateDims);
+    };
   }, []);
 
   const paintAll = React.useCallback(() => {
     const s = stateRef.current;
     if (count === 0) return;
     const step = 360 / count;
+    const rx = s.radiusX;
+    const ry = rx * ELLIPSE_FLATTEN;
+
+    // Rotate 3D foreshortened salon brass dial in lockstep with theta
+    if (floorDialRef.current) {
+      floorDialRef.current.style.transform = `rotate(${(-s.theta).toFixed(2)}deg)`;
+    }
+
     let bestIdx = 0;
     let bestCos = -2;
 
     for (let i = 0; i < count; i++) {
       const slot = slotRefs.current[i];
       if (!slot) continue;
+
       const deg = normAngle(s.theta + i * step);
       const rad = (deg * Math.PI) / 180;
       const sin = Math.sin(rad);
       const cos = Math.cos(rad);
-      const depth = (cos + 1) / 2; // 0 (back) .. 1 (front)
+      const depth = (cos + 1) / 2; // 0 (back rim) .. 1 (front spotlight rim)
 
       if (cos > bestCos) {
         bestCos = cos;
         bestIdx = i;
       }
 
-      const x = sin * s.radiusX;
-      const yLift = (1 - depth) * -32;
-      const scale = 0.56 + depth * 0.44;
-      const rotY = -sin * 15;
-      const opacity = 0.36 + depth * 0.64;
+      const footX = sin * rx;
+      const footY = cos * ry;
+      const scale = 0.50 + Math.pow(depth, 1.18) * 0.50;
+      const swayDeg = s.sway * (0.35 + depth * 0.65);
+      // Smoothly fade the 180° gown directly behind the 0° hero so wide tulle skirts never poke behind narrow waists
+      const occlusionFade = clamp((cos + 0.95) / 0.22, 0, 1);
+      const opacity = (cos > 0.86 ? 1 : 0.36 + depth * 0.60) * occlusionFade;
 
-      slot.style.transform = `translate3d(${x.toFixed(1)}px, ${yLift.toFixed(1)}px, 0) perspective(1400px) rotateY(${rotY.toFixed(2)}deg) scale(${scale.toFixed(3)})`;
+      slot.style.transform = `translate3d(${footX.toFixed(1)}px, ${footY.toFixed(1)}px, 0) scale(${scale.toFixed(3)}) rotate(${swayDeg.toFixed(2)}deg)`;
       slot.style.opacity = opacity.toFixed(3);
       slot.style.zIndex = String(Math.round(depth * 100));
+
+      const sh = shadowRefs.current[i];
+      if (sh) {
+        const shScale = scale * 0.92;
+        sh.style.transform = `translate3d(${footX.toFixed(1)}px, ${footY.toFixed(1)}px, 0) scale(${shScale.toFixed(3)})`;
+        sh.style.opacity = ((0.14 + depth * 0.34) * occlusionFade).toFixed(3);
+      }
 
       const frontImg = frontImgRefs.current[i];
       const tqImg = tqImgRefs.current[i];
       const backImg = backImgRefs.current[i];
 
       let activeFace: "front" | "tq" | "back" = "front";
-      if (cos < -0.28 && backImg) activeFace = "back";
-      else if (cos < 0.42 && tqImg) activeFace = "tq";
+      if (cos < -0.30 && backImg) activeFace = "back";
+      else if (cos < 0.44 && tqImg) activeFace = "tq";
 
       if (frontImg) frontImg.style.opacity = activeFace === "front" ? "1" : "0";
       if (tqImg) {
@@ -159,22 +211,28 @@ export function AtelierOrbitCarousel({ dresses }: AtelierOrbitCarouselProps) {
         s.targetTheta === null &&
         document.visibilityState === "visible";
 
+      let instVel = 0;
+
       if (s.dragging) {
+        instVel = s.velocity;
         busy = true;
       } else if (s.targetTheta !== null) {
         const diff = normAngle(s.targetTheta - s.theta);
-        s.theta += diff * Math.min(1, dt * 0.011);
-        if (Math.abs(diff) < 0.08) {
+        const delta = diff * Math.min(1, dt * 0.0115);
+        s.theta += delta;
+        instVel = delta / dt;
+        if (Math.abs(diff) < 0.07) {
           s.theta = s.targetTheta;
           s.targetTheta = null;
         } else {
           busy = true;
         }
-      } else if (Math.abs(s.velocity) > 0.008) {
+      } else if (Math.abs(s.velocity) > 0.006) {
         s.theta += s.velocity * dt;
-        s.velocity *= Math.pow(0.92, dt / 16);
+        instVel = s.velocity;
+        s.velocity *= Math.pow(0.925, dt / 16);
         busy = true;
-        if (Math.abs(s.velocity) <= 0.008) {
+        if (Math.abs(s.velocity) <= 0.006) {
           s.velocity = 0;
           if (count > 0) {
             const step = 360 / count;
@@ -184,8 +242,15 @@ export function AtelierOrbitCarousel({ dresses }: AtelierOrbitCarouselProps) {
         }
       } else if (canAuto) {
         s.theta -= AUTO_SPEED_DEG_PER_MS * dt;
+        instVel = -AUTO_SPEED_DEG_PER_MS;
         busy = true;
       }
+
+      // Smooth damped silk skirt sway
+      const targetSway = clamp(instVel * 18, -2.6, 2.6);
+      s.sway += (targetSway - s.sway) * Math.min(1, dt * 0.014);
+      if (Math.abs(s.sway) > 0.03) busy = true;
+      else s.sway = 0;
 
       paintAll();
 
@@ -207,9 +272,9 @@ export function AtelierOrbitCarousel({ dresses }: AtelierOrbitCarouselProps) {
     const s = stateRef.current;
     if (!s.raf) {
       s.lastFrame = 0;
-      s.raf = requestAnimationFrame(stepLoop);
+      s.raf = requestAnimationFrame(stepLoopRef.current);
     }
-  }, [stepLoop]);
+  }, []);
 
   React.useEffect(() => {
     const s = stateRef.current;
@@ -224,7 +289,7 @@ export function AtelierOrbitCarousel({ dresses }: AtelierOrbitCarouselProps) {
             s.inView = entries[0]?.isIntersecting ?? true;
             if (s.inView) kick();
           },
-          { threshold: 0.1 },
+          { threshold: 0.08 },
         )
       : null;
     if (el && io) io.observe(el);
@@ -273,7 +338,7 @@ export function AtelierOrbitCarousel({ dresses }: AtelierOrbitCarouselProps) {
       if (Math.abs(e.clientX - s.startX) > 7) s.dragMoved = true;
       const now = performance.now();
       const dt = Math.max(4, now - s.lastTime);
-      const degPerPx = s.radiusX > 0 ? 52 / s.radiusX : 0.2;
+      const degPerPx = s.radiusX > 0 ? 54 / s.radiusX : 0.2;
       s.theta += dx * degPerPx;
       s.velocity = (dx * degPerPx) / dt;
       s.lastX = e.clientX;
@@ -284,14 +349,14 @@ export function AtelierOrbitCarousel({ dresses }: AtelierOrbitCarouselProps) {
       const s = stateRef.current;
       if (!s.dragging) return;
       s.dragging = false;
-      if (Math.abs(s.velocity) < 0.02 && count > 0) {
+      if (Math.abs(s.velocity) < 0.018 && count > 0) {
         const step = 360 / count;
         s.targetTheta = Math.round(s.theta / step) * step;
       }
       kick();
       setTimeout(() => {
         s.dragMoved = false;
-      }, 60);
+      }, 65);
     };
     window.addEventListener("pointermove", onMove);
     window.addEventListener("pointerup", onUp);
@@ -308,10 +373,13 @@ export function AtelierOrbitCarousel({ dresses }: AtelierOrbitCarouselProps) {
 
   const frontShot = activeDress.shots.find((x) => x.angle === "front") || activeDress.shots[0];
   const saved = hasItem(activeDress.code);
+  const ringR = dims.radiusX * 1.05;
+  const cx = dims.w / 2;
 
   return (
-    <div
-      className="relative w-full select-none"
+    <section
+      aria-label="صالون عرض فساتين Rony Dress الدائري"
+      className="relative overflow-hidden border-b border-[var(--border-subtle)] bg-[var(--bg-stage)] py-4 sm:py-5"
       onMouseEnter={() => {
         stateRef.current.hovered = true;
       }}
@@ -320,121 +388,234 @@ export function AtelierOrbitCarousel({ dresses }: AtelierOrbitCarouselProps) {
         kick();
       }}
     >
-      {/* Orbital Stage */}
+      {/* Subtle Salon Spotlight Atmosphere */}
       <div
-        ref={stageRef}
-        tabIndex={0}
-        onKeyDown={(e) => {
-          if (e.key === "ArrowLeft") {
-            e.preventDefault();
-            stepBy(1);
-          } else if (e.key === "ArrowRight") {
-            e.preventDefault();
-            stepBy(-1);
-          }
-        }}
-        onPointerDown={(e) => {
-          if (e.button !== 0 && e.pointerType === "mouse") return;
-          const s = stateRef.current;
-          s.dragging = true;
-          s.dragMoved = false;
-          s.targetTheta = null;
-          s.velocity = 0;
-          s.startX = e.clientX;
-          s.lastX = e.clientX;
-          s.lastTime = performance.now();
-          kick();
-        }}
-        style={{ height: `${dims.h}px`, touchAction: "pan-y" }}
-        className="relative flex w-full cursor-grab items-center justify-center overflow-hidden outline-none active:cursor-grabbing"
-        aria-label="كاروسيل فساتين الأتيليه الدائري"
-      >
-        {/* Subtle circular runway floor glow */}
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_56%_65%_at_50%_42%,rgba(184,144,64,0.11)_0%,transparent_72%)]"
+      />
+
+      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        {/* Compact Symmetric Couture Eyebrow & Headline (Matches MO WORLD Single-Viewport Discipline) */}
+        <div className="mx-auto max-w-2xl text-center">
+          <p dir="ltr" className="micro-label text-[var(--brand-gold)]">
+            RONY DRESS • COUTURE &amp; BRIDAL ATELIER
+          </p>
+          <h1 className="mt-1 text-2xl font-bold tracking-tight text-[var(--text-strong)] sm:text-3xl lg:text-[34px]">
+            إطلالات ملكية تنبض بالتفاصيل
+          </h1>
+        </div>
+
+        {/* 3D Frameless Circular Couture Runway Stage */}
         <div
-          aria-hidden="true"
-          className="pointer-events-none absolute bottom-4 left-1/2 h-16 w-[84%] max-w-3xl -translate-x-1/2 rounded-[100%] border border-[var(--brand-gold)]/30 bg-[radial-gradient(ellipse_at_center,rgba(184,144,64,0.14)_0%,transparent_72%)]"
-        />
+          ref={stageRef}
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === "ArrowLeft") {
+              e.preventDefault();
+              stepBy(1);
+            } else if (e.key === "ArrowRight") {
+              e.preventDefault();
+              stepBy(-1);
+            }
+          }}
+          onPointerDown={(e) => {
+            if (e.button !== 0 && e.pointerType === "mouse") return;
+            const s = stateRef.current;
+            s.dragging = true;
+            s.dragMoved = false;
+            s.targetTheta = null;
+            s.velocity = 0;
+            s.startX = e.clientX;
+            s.lastX = e.clientX;
+            s.lastTime = performance.now();
+            kick();
+          }}
+          style={{ height: `${dims.stageH}px`, touchAction: "pan-y" }}
+          className="relative mt-1 w-full cursor-grab select-none outline-none active:cursor-grabbing"
+        >
+          {/* Architectural Brushed-Brass Canopy & Rotating 3D Perspective Runway Ring */}
+          <svg
+            aria-hidden="true"
+            viewBox={`0 0 ${dims.w} ${dims.stageH}`}
+            className="pointer-events-none absolute inset-0 h-full w-full overflow-visible"
+          >
+            <defs>
+              <linearGradient id={`${uid}-brass`} x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor="#B89040" stopOpacity="0.18" />
+                <stop offset="28%" stopColor="#D7B98E" stopOpacity="0.72" />
+                <stop offset="50%" stopColor="#B89040" stopOpacity="0.95" />
+                <stop offset="72%" stopColor="#D7B98E" stopOpacity="0.72" />
+                <stop offset="100%" stopColor="#B89040" stopOpacity="0.18" />
+              </linearGradient>
+              <radialGradient id={`${uid}-floor`} cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stopColor="#B89040" stopOpacity="0.12" />
+                <stop offset="68%" stopColor="#B89040" stopOpacity="0.04" />
+                <stop offset="100%" stopColor="#B89040" stopOpacity="0" />
+              </radialGradient>
+            </defs>
 
-        {dresses.map((dress, idx) => {
-          const isFront = idx === frontIndex;
-          const fShot = dress.shots.find((s) => s.angle === "front") || dress.shots[0];
-          const tqShot = dress.shots.find((s) => s.angle === "three-quarter");
-          const bShot = dress.shots.find((s) => s.angle === "back");
+            {/* Overhead Couture Chandelier Halo */}
+            <ellipse
+              cx={cx}
+              cy={16}
+              rx={dims.radiusX * 0.72}
+              ry={Math.max(10, dims.radiusX * 0.055)}
+              fill="none"
+              stroke={`url(#${uid}-brass)`}
+              strokeWidth="1"
+            />
 
-          return (
-            <div
-              key={dress.code}
+            {/* Foreshortened 3D Brass Turntable Ring on the Salon Floor */}
+            <g transform={`translate(${cx}, ${dims.floorY}) scale(1, ${ELLIPSE_FLATTEN})`}>
+              <circle r={ringR * 1.04} fill={`url(#${uid}-floor)`} />
+              <circle
+                r={ringR * 1.03}
+                fill="none"
+                stroke={`url(#${uid}-brass)`}
+                strokeWidth="1.8"
+              />
+              <circle
+                r={ringR * 0.94}
+                fill="none"
+                stroke="#B89040"
+                strokeOpacity="0.28"
+                strokeWidth="1"
+              />
+
+              {/* Rotating Degree Dial + Gown Station Markers */}
+              <g ref={floorDialRef} style={{ transformOrigin: "0px 0px" }}>
+                {TICKS_72.map((deg) => {
+                  const major = deg % 45 === 0;
+                  const r0 = ringR * (major ? 0.94 : 0.975);
+                  const r1 = ringR * 1.025;
+                  const rad = (deg * Math.PI) / 180;
+                  return (
+                    <line
+                      key={deg}
+                      x1={Math.sin(rad) * r0}
+                      y1={Math.cos(rad) * r0}
+                      x2={Math.sin(rad) * r1}
+                      y2={Math.cos(rad) * r1}
+                      stroke="#B89040"
+                      strokeOpacity={major ? 0.75 : 0.32}
+                      strokeWidth={major ? 1.8 : 1}
+                    />
+                  );
+                })}
+              </g>
+            </g>
+          </svg>
+
+          {/* Grounded Contact Floor Shadows Beneath Each Floating Gown */}
+          {dresses.map((dress, idx) => (
+            <span
+              key={`shadow-${dress.code}`}
               ref={(el) => {
-                slotRefs.current[idx] = el;
+                shadowRefs.current[idx] = el;
               }}
+              aria-hidden="true"
               style={{
-                width: `${dims.cardW}px`,
-                height: `${dims.cardH}px`,
-                marginLeft: `${-dims.cardW / 2}px`,
-                marginTop: `${-dims.cardH / 2}px`,
+                left: `${cx}px`,
+                top: `${dims.floorY}px`,
+                width: `${Math.round(dims.gownW * 0.72)}px`,
+                height: `${Math.max(18, Math.round(dims.gownW * 0.16))}px`,
+                marginLeft: `${-Math.round(dims.gownW * 0.36)}px`,
+                marginTop: `${-Math.max(9, Math.round(dims.gownW * 0.08))}px`,
+                background:
+                  "radial-gradient(ellipse at center, rgba(18,14,16,0.42) 0%, rgba(18,14,16,0.14) 48%, transparent 74%)",
                 willChange: "transform, opacity",
               }}
-              className="absolute top-1/2 left-1/2"
-            >
+              className="pointer-events-none absolute z-[1] rounded-full"
+            />
+          ))}
+
+          {/* 8 Floating RGBA Transparent Cutout Couture Gowns */}
+          {dresses.map((dress, idx) => {
+            const isFront = idx === frontIndex;
+            const fShot = dress.shots.find((s) => s.angle === "front") || dress.shots[0];
+            const tqShot = dress.shots.find((s) => s.angle === "three-quarter");
+            const bShot = dress.shots.find((s) => s.angle === "back");
+            const hemAnchorPx = Math.round(dims.gownH * 0.966);
+
+            const gownLayers = (
               <div className="relative h-full w-full">
+                {fShot && (
+                  <img
+                    ref={(el) => {
+                      frontImgRefs.current[idx] = el;
+                    }}
+                    src={fShot.src}
+                    alt={`${dress.nameAr} — أمامي`}
+                    fetchPriority={idx < 2 ? "high" : "auto"}
+                    draggable={false}
+                    className="pointer-events-none absolute inset-0 h-full w-full object-contain transition-opacity duration-200"
+                  />
+                )}
+                {extraAnglesReady && tqShot && (
+                  <img
+                    ref={(el) => {
+                      tqImgRefs.current[idx] = el;
+                    }}
+                    src={tqShot.src}
+                    alt=""
+                    draggable={false}
+                    style={{ opacity: 0 }}
+                    className="pointer-events-none absolute inset-0 h-full w-full object-contain transition-opacity duration-200"
+                  />
+                )}
+                {extraAnglesReady && bShot && (
+                  <img
+                    ref={(el) => {
+                      backImgRefs.current[idx] = el;
+                    }}
+                    src={bShot.src}
+                    alt=""
+                    draggable={false}
+                    style={{ opacity: 0 }}
+                    className="pointer-events-none absolute inset-0 h-full w-full object-contain transition-opacity duration-200"
+                  />
+                )}
+              </div>
+            );
+
+            return (
+              <div
+                key={dress.code}
+                ref={(el) => {
+                  slotRefs.current[idx] = el;
+                }}
+                style={{
+                  left: `${cx}px`,
+                  top: `${dims.floorY - hemAnchorPx}px`,
+                  width: `${dims.gownW}px`,
+                  height: `${dims.gownH}px`,
+                  marginLeft: `${-dims.gownW / 2}px`,
+                  transformOrigin: `50% ${hemAnchorPx}px`,
+                  willChange: "transform, opacity",
+                }}
+                className="absolute"
+              >
                 {isFront ? (
                   <Link
                     href={`/dress/${dress.code}`}
                     onClick={(e) => {
-                      if (stateRef.current.dragMoved) {
-                        e.preventDefault();
-                      }
+                      if (stateRef.current.dragMoved) e.preventDefault();
                     }}
-                    aria-label={`استعراض ${dress.nameAr} ${dress.code}`}
-                    className="group relative block h-full w-full overflow-hidden rounded-lg border border-[var(--brand-gold)]/55 bg-[#F7F1E8] shadow-[0_24px_50px_-14px_rgba(58,41,48,0.28)] ring-1 ring-[var(--brand-gold)]/20"
+                    aria-label={`استعراض ${dress.nameAr} (${dress.code}) بصفحة ٣٦٠° مستقلة`}
+                    className="group relative block h-full w-full outline-none"
                   >
                     <ViewTransition name={`dress-${dress.code}`} share="morph" default="none">
-                      <div className="relative h-full w-full overflow-hidden bg-[#F7F1E8]">
-                        {fShot && (
-                          <img
-                            ref={(el) => {
-                              frontImgRefs.current[idx] = el;
-                            }}
-                            src={fShot.src}
-                            alt={`${dress.nameAr} — أمامي`}
-                            fetchPriority={idx < 2 ? "high" : "auto"}
-                            draggable={false}
-                            className="absolute inset-0 h-full w-full object-cover object-top transition-opacity duration-200"
-                          />
-                        )}
-                        {extraAnglesReady && tqShot && (
-                          <img
-                            ref={(el) => {
-                              tqImgRefs.current[idx] = el;
-                            }}
-                            src={tqShot.src}
-                            alt={`${dress.nameAr} — زاوية جانبية`}
-                            draggable={false}
-                            style={{ opacity: 0 }}
-                            className="absolute inset-0 h-full w-full object-cover object-top transition-opacity duration-200"
-                          />
-                        )}
-                        {extraAnglesReady && bShot && (
-                          <img
-                            ref={(el) => {
-                              backImgRefs.current[idx] = el;
-                            }}
-                            src={bShot.src}
-                            alt={`${dress.nameAr} — خلفي`}
-                            draggable={false}
-                            style={{ opacity: 0 }}
-                            className="absolute inset-0 h-full w-full object-cover object-top transition-opacity duration-200"
-                          />
-                        )}
+                      <div className="h-full w-full transition-transform duration-300 group-hover:-translate-y-1">
+                        {gownLayers}
                       </div>
                     </ViewTransition>
 
-                    <span className="pointer-events-none absolute top-2.5 right-2.5 rounded bg-[#171317]/80 px-2 py-0.5 font-en text-[10px] font-semibold tracking-wider text-[#FFF9F2] backdrop-blur-xs">
+                    {/* Minimal Couture Brass Atelier Tag */}
+                    <span
+                      dir="ltr"
+                      className="pointer-events-none absolute top-[10%] -right-1 rounded-[3px] border border-[var(--brand-gold)]/65 bg-[var(--bg-primary)]/92 px-2 py-0.5 font-en text-[9.5px] font-bold tracking-[0.18em] text-[var(--text-strong)] shadow-sm backdrop-blur-xs transition-colors group-hover:border-[var(--brand-gold)] group-hover:bg-[var(--brand-gold)] group-hover:text-[#FAF7F2]"
+                    >
                       {dress.code}
-                    </span>
-
-                    <span className="pointer-events-none absolute bottom-2.5 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-[#3A2930]/88 px-3 py-1 text-[10px] font-semibold text-[#FFF9F2] opacity-95 backdrop-blur-xs transition group-hover:bg-[var(--brand-gold)]">
-                      اضغطي للتفاصيل واللف ٣٦٠°
                     </span>
                   </Link>
                 ) : (
@@ -443,94 +624,39 @@ export function AtelierOrbitCarousel({ dresses }: AtelierOrbitCarouselProps) {
                     onClick={() => {
                       if (!stateRef.current.dragMoved) snapToIndex(idx);
                     }}
-                    aria-label={`عرض ${dress.nameAr}`}
-                    className="relative block h-full w-full overflow-hidden rounded-lg border border-[var(--border-subtle)] bg-[#F7F1E8] text-right shadow-md transition-shadow hover:border-[var(--brand-gold)]"
+                    aria-label={`تدوير المنصة إلى ${dress.nameAr}`}
+                    className="block h-full w-full cursor-pointer outline-none"
                   >
-                    <div className="relative h-full w-full overflow-hidden bg-[#F7F1E8]">
-                      {fShot && (
-                        <img
-                          ref={(el) => {
-                            frontImgRefs.current[idx] = el;
-                          }}
-                          src={fShot.src}
-                          alt={dress.nameAr}
-                          fetchPriority={idx < 2 ? "high" : "auto"}
-                          draggable={false}
-                          className="absolute inset-0 h-full w-full object-cover object-top transition-opacity duration-200"
-                        />
-                      )}
-                      {extraAnglesReady && tqShot && (
-                        <img
-                          ref={(el) => {
-                            tqImgRefs.current[idx] = el;
-                          }}
-                          src={tqShot.src}
-                          alt=""
-                          draggable={false}
-                          style={{ opacity: 0 }}
-                          className="absolute inset-0 h-full w-full object-cover object-top transition-opacity duration-200"
-                        />
-                      )}
-                      {extraAnglesReady && bShot && (
-                        <img
-                          ref={(el) => {
-                            backImgRefs.current[idx] = el;
-                          }}
-                          src={bShot.src}
-                          alt=""
-                          draggable={false}
-                          style={{ opacity: 0 }}
-                          className="absolute inset-0 h-full w-full object-cover object-top transition-opacity duration-200"
-                        />
-                      )}
-                    </div>
+                    {gownLayers}
                   </button>
                 )}
               </div>
-            </div>
-          );
-        })}
+            );
+          })}
 
-        {/* Left / Right Orbit Controls */}
-        <button
-          type="button"
-          onClick={() => stepBy(-1)}
-          aria-label="الفستان السابق"
-          className="absolute right-2 top-1/2 z-30 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-[var(--border-subtle)] bg-[var(--bg-primary)]/90 text-[var(--text-strong)] shadow-md backdrop-blur-xs transition hover:border-[var(--brand-gold)] hover:text-[var(--brand-gold)] md:right-4"
-        >
-          <ChevronRight className="h-5 w-5" />
-        </button>
-        <button
-          type="button"
-          onClick={() => stepBy(1)}
-          aria-label="الفستان التالي"
-          className="absolute left-2 top-1/2 z-30 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-[var(--border-subtle)] bg-[var(--bg-primary)]/90 text-[var(--text-strong)] shadow-md backdrop-blur-xs transition hover:border-[var(--brand-gold)] hover:text-[var(--brand-gold)] md:left-4"
-        >
-          <ChevronLeft className="h-5 w-5" />
-        </button>
-      </div>
+          {/* Subtle Left/Right Runway Step Controls */}
+          <button
+            type="button"
+            onClick={() => stepBy(-1)}
+            aria-label="الفستان السابق"
+            className="absolute right-0 top-1/2 z-[120] flex size-9 -translate-y-1/2 items-center justify-center rounded-[4px] border border-[var(--border-subtle)] bg-[var(--bg-primary)]/88 text-[var(--text-strong)] backdrop-blur-xs transition-colors hover:border-[var(--brand-gold)] hover:text-[var(--brand-gold)] sm:size-10"
+          >
+            <ChevronRight className="size-4.5" strokeWidth={1.5} />
+          </button>
+          <button
+            type="button"
+            onClick={() => stepBy(1)}
+            aria-label="الفستان التالي"
+            className="absolute left-0 top-1/2 z-[120] flex size-9 -translate-y-1/2 items-center justify-center rounded-[4px] border border-[var(--border-subtle)] bg-[var(--bg-primary)]/88 text-[var(--text-strong)] backdrop-blur-xs transition-colors hover:border-[var(--brand-gold)] hover:text-[var(--brand-gold)] sm:size-10"
+          >
+            <ChevronLeft className="size-4.5" strokeWidth={1.5} />
+          </button>
+        </div>
 
-      {/* Center-Stage Active Dress Spotlight Bar */}
-      <div className="mx-auto mt-2 max-w-2xl px-4">
-        <div className="flex flex-col items-center justify-between gap-3 rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-surface)]/95 px-4 py-3.5 shadow-sm backdrop-blur-xs sm:flex-row sm:px-5">
-          <div className="min-w-0 text-center sm:text-right">
-            <div className="flex flex-wrap items-center justify-center gap-2 sm:justify-start">
-              <span className="font-en text-xs font-bold tracking-wider text-[var(--brand-gold)]">
-                {activeDress.code}
-              </span>
-              <span className="rounded-full bg-[var(--brand-gold)]/15 px-2.5 py-0.5 text-[11px] font-semibold text-[var(--brand-gold)]">
-                {STATUS_LABELS_AR[activeDress.status] || "متاح للإيجار"}
-              </span>
-              <span className="text-[11px] text-[var(--text-muted)]">
-                {activeDress.occasions.map((o) => OCCASION_LABELS_AR[o]).slice(0, 2).join(" · ")}
-              </span>
-            </div>
-            <h2 className="mt-1 truncate text-base font-bold text-[var(--text-strong)]">
-              {activeDress.nameAr}
-            </h2>
-          </div>
-
-          <div className="flex shrink-0 items-center gap-2">
+        {/* Symmetric Above-the-Fold Couture Pedestal Caption & Dual CTAs */}
+        <div className="mx-auto mt-2 max-w-xl text-center">
+          {/* Orbital Station Indicators + Play/Pause & Shortlist */}
+          <div className="flex items-center justify-center gap-2">
             <button
               type="button"
               onClick={() => {
@@ -539,12 +665,27 @@ export function AtelierOrbitCarousel({ dresses }: AtelierOrbitCarouselProps) {
                 stateRef.current.userStopped = next;
                 if (!next) kick();
               }}
-              aria-label={isAutoPaused ? "تشغيل الدوران" : "إيقاف الدوران"}
-              className="flex h-9 w-9 items-center justify-center rounded border border-[var(--border-subtle)] bg-[var(--bg-primary)] text-[var(--text-strong)] transition hover:border-[var(--brand-gold)]"
-              title={isAutoPaused ? "تشغيل الدوران التلقائي" : "تثبيت العرض"}
+              aria-label={isAutoPaused ? "تشغيل دوران المنصة" : "إيقاف دوران المنصة"}
+              className="inline-flex size-6 items-center justify-center rounded-[3px] border border-[var(--border-subtle)] bg-[var(--bg-primary)] text-[var(--text-muted)] transition-colors hover:border-[var(--brand-gold)] hover:text-[var(--brand-gold)]"
             >
-              <RotateCw className={`h-4 w-4 ${!isAutoPaused ? "text-[var(--brand-gold)]" : ""}`} />
+              {isAutoPaused ? <Play className="size-3" /> : <Pause className="size-3" />}
             </button>
+
+            <div className="flex items-center gap-1.5 px-1">
+              {dresses.map((d, i) => (
+                <button
+                  key={d.code}
+                  type="button"
+                  onClick={() => snapToIndex(i)}
+                  aria-label={`اختيار ${d.nameAr}`}
+                  className={`h-[3px] rounded-full transition-all ${
+                    i === frontIndex
+                      ? "w-6 bg-[var(--brand-gold)]"
+                      : "w-2 bg-[var(--border-subtle)] hover:bg-[var(--brand-gold)]/55"
+                  }`}
+                />
+              ))}
+            </div>
 
             <button
               type="button"
@@ -558,43 +699,54 @@ export function AtelierOrbitCarousel({ dresses }: AtelierOrbitCarouselProps) {
                   occasionLabel: OCCASION_LABELS_AR[activeDress.occasions[0]] || "مناسبات",
                 })
               }
-              aria-label="حفظ في اختياراتي"
-              className={`flex h-9 w-9 items-center justify-center rounded border transition ${
+              aria-label={saved ? "إزالة من اختياراتي" : "حفظ للبروفة"}
+              className={`inline-flex size-6 items-center justify-center rounded-[3px] border transition-colors ${
                 saved
-                  ? "border-[var(--brand-gold)] bg-[var(--brand-gold)] text-[#FFF9F2]"
-                  : "border-[var(--border-subtle)] bg-[var(--bg-primary)] text-[var(--text-strong)] hover:border-[var(--brand-gold)]"
+                  ? "border-[var(--brand-gold)] bg-[var(--brand-gold)] text-[#FAF7F2]"
+                  : "border-[var(--border-subtle)] bg-[var(--bg-primary)] text-[var(--text-muted)] hover:border-[var(--brand-gold)] hover:text-[var(--brand-gold)]"
               }`}
             >
-              <Heart className={`h-4 w-4 ${saved ? "fill-current" : ""}`} />
+              <Heart className={`size-3 ${saved ? "fill-current" : ""}`} />
             </button>
+          </div>
 
+          <div className="mt-2 flex items-center justify-center gap-2 text-[11px] font-medium text-[var(--text-muted)]">
+            <span dir="ltr" className="font-en font-bold tracking-[0.16em] text-[var(--brand-gold)]">
+              {activeDress.code}
+            </span>
+            <span>·</span>
+            <span className="font-semibold text-[var(--text-primary)]">
+              {STATUS_LABELS_AR[activeDress.status] || "متاح للإيجار"}
+            </span>
+            <span>·</span>
+            <span>{activeDress.occasions.map((o) => OCCASION_LABELS_AR[o]).slice(0, 2).join(" و")}</span>
+          </div>
+
+          <h2 className="mt-0.5 text-base font-bold text-[var(--text-strong)] sm:text-lg">
+            {activeDress.nameAr}
+          </h2>
+          <p className="mt-0.5 text-[11px] text-[var(--text-muted)] sm:text-xs">
+            اسحبي المنصة للدوران أو اضغطي على الفستان لفتحه بحجم كامل وتدويره ٣٦٠°
+          </p>
+
+          {/* Symmetric Equal Side-by-Side CTAs (MO WORLD Signature Symmetry) */}
+          <div className="mx-auto mt-3.5 grid max-w-sm grid-cols-2 gap-2.5">
             <Link
               href={`/dress/${activeDress.code}`}
-              className="inline-flex h-9 items-center gap-1.5 rounded bg-[var(--brand-gold)] px-4 text-xs font-semibold text-[#FFF9F2] transition hover:bg-[var(--brand-gold-hover)]"
+              className="inline-flex h-10 items-center justify-center gap-1.5 rounded-[4px] bg-[var(--brand-gold)] px-3 text-xs font-semibold text-[#FAF7F2] whitespace-nowrap transition-colors hover:bg-[var(--brand-gold-hover)]"
             >
-              <Eye className="h-3.5 w-3.5" />
-              <span>التفاصيل واللف ٣٦٠°</span>
+              <span>استعرضي الفستان ٣٦٠°</span>
+              <ArrowLeft className="size-3.5 shrink-0" strokeWidth={1.5} />
+            </Link>
+            <Link
+              href="/collection"
+              className="inline-flex h-10 items-center justify-center rounded-[4px] border border-[var(--border-subtle)] bg-[var(--bg-primary)] px-3 text-xs font-semibold text-[var(--text-primary)] whitespace-nowrap transition-colors hover:border-[var(--brand-gold)] hover:text-[var(--brand-gold)]"
+            >
+              تصفحي الكولكشن الكامل
             </Link>
           </div>
         </div>
-
-        {/* Orbital Slot Dots */}
-        <div className="mt-3 flex items-center justify-center gap-1.5">
-          {dresses.map((d, i) => (
-            <button
-              key={d.code}
-              type="button"
-              onClick={() => snapToIndex(i)}
-              aria-label={`اختيار ${d.nameAr}`}
-              className={`h-1.5 rounded-full transition-all ${
-                i === frontIndex
-                  ? "w-6 bg-[var(--brand-gold)]"
-                  : "w-1.5 bg-[var(--border-subtle)] hover:bg-[var(--brand-gold)]/50"
-              }`}
-            />
-          ))}
-        </div>
       </div>
-    </div>
+    </section>
   );
 }
