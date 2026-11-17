@@ -50,9 +50,10 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "/og-image.jpg",
+        url: "/og-cover.jpg",
         width: 1200,
         height: 630,
+        type: "image/jpeg",
         alt: "Rony Dress — أتيليه فستان ست البنات",
       },
     ],
@@ -61,7 +62,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Rony Dress | أتيليه فستان ست البنات",
     description: "فساتين خطوبة وسواريه وكتب كتاب وتصميمات هاند ميد للإيجار وحجز المواعيد في كفر الزيات.",
-    images: ["/og-image.jpg"],
+    images: ["/og-cover.jpg"],
   },
 };
 
@@ -69,8 +70,8 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#FFF9F2" },
-    { media: "(prefers-color-scheme: dark)", color: "#171317" },
+    { media: "(prefers-color-scheme: light)", color: "#F7F6F3" },
+    { media: "(prefers-color-scheme: dark)", color: "#0B0A0C" },
   ],
 };
 
