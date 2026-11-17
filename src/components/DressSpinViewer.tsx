@@ -327,13 +327,13 @@ export function DressSpinViewer({
               background:
                 "radial-gradient(ellipse at center, rgba(11,9,12,0.28) 0%, rgba(11,9,12,0.09) 48%, transparent 74%)",
             }}
-            className="pointer-events-none absolute bottom-[3.2%] left-1/2 h-5 w-[54%] rounded-full"
+            className="pointer-events-none absolute bottom-[3.2%] left-1/2 z-[1] h-5 w-[54%] rounded-full"
           />
         )}
 
         {/* Mode 1: True 3D Two-Sided Front/Back Couture Flip (Zero Double-Exposure Ghosting) */}
         {viewMode === "3d" && !zoomed && (
-          <div className="absolute inset-x-3 top-3 bottom-4" style={{ perspective: "1400px" }}>
+          <div className="absolute inset-x-3 top-3 bottom-4 z-[2]" style={{ perspective: "1400px" }}>
             <div ref={spinRef} className="relative size-full [transform-style:preserve-3d]">
               {/* Front Face (0deg) */}
               <div className="absolute inset-0 [backface-visibility:hidden]">
@@ -377,7 +377,7 @@ export function DressSpinViewer({
 
         {/* Mode 2: Dedicated Crisp Side / Three-Quarter Portrait */}
         {viewMode === "side" && sideShot && !zoomed && (
-          <div className="absolute inset-x-3 top-3 bottom-4">
+          <div className="absolute inset-x-3 top-3 bottom-4 z-[2]">
             <img
               src={sideShot.src}
               alt={`${dress.nameAr} — زاوية جانبية`}
@@ -570,7 +570,7 @@ export function DressSpinViewer({
             <button
               type="button"
               onClick={() => setLightboxOpen(false)}
-              className="inline-flex h-9 items-center gap-1.5 rounded-[4px] border border-[var(--border-subtle)] bg-[var(--bg-surface)] px-3 text-xs font-medium text-[var(--text-primary)] hover:border-[var(--text-primary)]"
+              className="inline-flex h-9 items-center gap-1.5 rounded-full border border-[var(--border-subtle)] bg-[var(--bg-surface)] px-4 text-xs font-medium text-[var(--text-primary)] hover:border-[var(--text-primary)]"
             >
               <span>إغلاق</span>
               <X className="size-3.5" strokeWidth={1.5} />

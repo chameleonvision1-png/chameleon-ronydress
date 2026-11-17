@@ -421,13 +421,6 @@ export function AtelierOrbitCarousel({ dresses }: AtelierOrbitCarouselProps) {
         }}
       />
 
-      {/* Enchanted Morphing Couture Spirit Creatures & Soft Aura */}
-      <CoutureSpiritBackdrop
-        dressCode={activeDress.code}
-        occasion={activeDress.occasions[0]}
-        variant="hero"
-      />
-
       <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-1 flex-col justify-between px-4 py-4 sm:px-6 sm:py-6 lg:px-8">
         {/* Symmetric Single-Line Eyebrow & Couture Headline */}
         <header className="mx-auto flex max-w-3xl flex-col items-center gap-1 text-center">
@@ -471,6 +464,12 @@ export function AtelierOrbitCarousel({ dresses }: AtelierOrbitCarouselProps) {
           }}
           className="relative mt-2 w-full cursor-grab select-none outline-none active:cursor-grabbing"
         >
+          {/* Enchanted Roaming & Morphing Couture Spirit Creatures Strictly Behind Stage Gowns */}
+          <CoutureSpiritBackdrop
+            dressCode={activeDress.code}
+            occasion={activeDress.occasions[0]}
+            variant="hero"
+          />
           {/* Soft Grounded Contact Shadows Under Each Gown */}
           {dresses.map((dress, i) => (
             <span
@@ -849,15 +848,6 @@ function CoutureLiftModal({
         }`}
       />
 
-      {/* Ambient Floating Couture Spirit Creatures Behind Lifted Gown */}
-      <div className="pointer-events-none fixed inset-0 z-[1]">
-        <CoutureSpiritBackdrop
-          dressCode={dress.code}
-          occasion={dress.occasions[0]}
-          variant="stage"
-        />
-      </div>
-
       <button
         type="button"
         onClick={dismiss}
@@ -879,14 +869,28 @@ function CoutureLiftModal({
         </svg>
       </button>
 
-      <div className="relative z-10 mx-auto flex min-h-full w-full max-w-5xl items-start justify-center pt-14 pb-8 md:items-center md:py-8">
+      <div className="relative z-10 mx-auto flex min-h-full w-full max-w-5xl items-start justify-center pt-16 pb-8 md:items-center md:py-8">
         <div className="grid w-full items-center gap-6 md:grid-cols-[minmax(0,1fr)_minmax(0,25rem)] md:gap-10">
-          {/* 3D Two-Sided Drag-Flip Stage (Rock-Solid Pixel Height — Zero Mobile Scroll Jump!) */}
-          <div
-            dir="ltr"
-            ref={figureRef}
-            className="relative mx-auto aspect-[2/3] h-[340px] origin-top sm:h-[490px]"
-          >
+          {/* Bounded Studio Stage: Roaming Creatures Strictly Behind Gown (Never Under × إغلاق or Over Text!) */}
+          <div className="relative mx-auto flex h-[340px] w-full max-w-[460px] items-center justify-center sm:h-[490px]">
+            <div
+              className={`pointer-events-none absolute inset-0 z-0 transition-opacity duration-300 ${
+                shown ? "opacity-100" : "opacity-0"
+              }`}
+            >
+              <CoutureSpiritBackdrop
+                dressCode={dress.code}
+                occasion={dress.occasions[0]}
+                variant="modal"
+              />
+            </div>
+
+            {/* 3D Two-Sided Drag-Flip Stage (Rock-Solid Pixel Height — Zero Mobile Scroll Jump!) */}
+            <div
+              dir="ltr"
+              ref={figureRef}
+              className="relative z-10 mx-auto aspect-[2/3] h-[340px] origin-top sm:h-[490px]"
+            >
             <span
               ref={shadowRef}
               aria-hidden="true"
@@ -1007,10 +1011,11 @@ function CoutureLiftModal({
                 )}
               </div>
             </div>
+            </div>
+            </div>
           </div>
-        </div>
 
-        {/* Couture Details & Quick Actions Column */}
+          {/* Couture Details & Quick Actions Column */}
         <div
           dir="rtl"
           className={`flex flex-col gap-3.5 text-center transition-[opacity,transform] delay-75 duration-400 md:text-right ${
