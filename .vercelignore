@@ -1,0 +1,7 @@
+node_modules
+.next
+.git
+source-assets
+tmp-gen
+data
+.env.local

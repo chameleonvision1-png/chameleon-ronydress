@@ -37,3 +37,6 @@ next-env.d.ts
 # raw client reference photos (never commit or publish)
 /source-assets/
 /tmp-gen/
+
+.vercel
+.env*
