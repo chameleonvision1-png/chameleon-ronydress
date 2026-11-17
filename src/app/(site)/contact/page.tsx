@@ -31,7 +31,7 @@ export default async function ContactPage() {
       </div>
 
       <div className="mt-8 grid grid-cols-1 gap-5 md:grid-cols-2">
-        <div className="space-y-4 rounded-[4px] border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-6">
+        <div className="space-y-4 rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-6">
           <h2 className="text-base font-bold text-[var(--text-strong)]">بيانات الأتيليه</h2>
 
           <div className="flex items-start gap-3 text-sm">
@@ -73,7 +73,7 @@ export default async function ContactPage() {
           )}
         </div>
 
-        <div className="space-y-4 rounded-[4px] border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-6">
+        <div className="space-y-4 rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-6">
           <h2 className="text-base font-bold text-[var(--text-strong)]">الحسابات الرسمية والحجز السريع</h2>
 
           <div className="space-y-2.5">
@@ -81,7 +81,7 @@ export default async function ContactPage() {
               href={settings.instagramUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center justify-between rounded-[4px] border border-[var(--border-subtle)] bg-[var(--bg-primary)] px-4 py-3 text-sm font-semibold transition-colors hover:border-[var(--brand-gold)]"
+              className="flex items-center justify-between rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-primary)] px-4 py-3 text-sm font-semibold transition-colors hover:border-[var(--brand-gold)]"
             >
               <span className="inline-flex items-center gap-2.5">
                 <Instagram className="h-4 w-4 text-[var(--brand-gold)]" />
@@ -96,7 +96,7 @@ export default async function ContactPage() {
               href={settings.facebookUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center justify-between rounded-[4px] border border-[var(--border-subtle)] bg-[var(--bg-primary)] px-4 py-3 text-sm font-semibold transition-colors hover:border-[var(--brand-gold)]"
+              className="flex items-center justify-between rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-primary)] px-4 py-3 text-sm font-semibold transition-colors hover:border-[var(--brand-gold)]"
             >
               <span className="inline-flex items-center gap-2.5">
                 <Share2 className="h-4 w-4 text-[var(--brand-gold)]" />
@@ -110,7 +110,7 @@ export default async function ContactPage() {
                 href={waUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-between rounded-[4px] bg-[var(--brand-gold)] px-4 py-3 text-sm font-bold text-[#FAF7F2]"
+                className="flex items-center justify-between rounded-2xl bg-[var(--brand-gold)] px-4 py-3 text-sm font-bold text-[#FAF7F2]"
               >
                 <span className="inline-flex items-center gap-2.5">
                   <MessageCircle className="h-4 w-4" />
@@ -122,7 +122,7 @@ export default async function ContactPage() {
 
             <Link
               href="/booking"
-              className="flex items-center justify-between rounded-[4px] border border-[var(--brand-gold)] bg-[var(--bg-primary)] px-4 py-3 text-sm font-bold text-[var(--text-strong)] transition-colors hover:bg-[var(--brand-gold)] hover:text-[#FAF7F2]"
+              className="flex items-center justify-between rounded-2xl border border-[var(--brand-gold)] bg-[var(--bg-primary)] px-4 py-3 text-sm font-bold text-[var(--text-strong)] transition-colors hover:bg-[var(--brand-gold)] hover:text-[#FAF7F2]"
             >
               <span className="inline-flex items-center gap-2.5">
                 <CalendarCheck className="h-4 w-4 text-[var(--brand-gold)]" />

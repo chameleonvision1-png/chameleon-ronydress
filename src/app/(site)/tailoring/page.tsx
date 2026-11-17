@@ -52,9 +52,9 @@ export default async function TailoringPage() {
           return (
             <div
               key={item.title}
-              className="rounded-[4px] border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-6"
+              className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-6"
             >
-              <span className="inline-flex size-10 items-center justify-center rounded-[4px] border border-[var(--border-subtle)] bg-[var(--bg-primary)] text-[var(--brand-gold)]">
+              <span className="inline-flex size-10 items-center justify-center rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-primary)] text-[var(--brand-gold)]">
                 <Icon className="size-5" strokeWidth={1.5} />
               </span>
               <h2 className="mt-3 text-base font-bold text-[var(--text-strong)]">{item.title}</h2>
@@ -71,7 +71,7 @@ export default async function TailoringPage() {
           </h2>
           <Link
             href="/booking"
-            className="inline-flex h-10 items-center gap-1.5 rounded-[4px] bg-[var(--brand-gold)] px-4 text-xs font-bold text-[#FAF7F2]"
+            className="inline-flex h-10 items-center gap-1.5 rounded-2xl bg-[var(--brand-gold)] px-4 text-xs font-bold text-[#FAF7F2]"
           >
             <CalendarCheck className="size-3.5" strokeWidth={1.5} />
             <span>احجزي استشارة وتفصيل</span>
@@ -85,7 +85,7 @@ export default async function TailoringPage() {
         </div>
       </section>
 
-      <div className="mt-10 rounded-[4px] border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-6">
+      <div className="mt-10 rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-6">
         <h3 className="flex items-center gap-2 text-sm font-bold text-[var(--text-strong)]">
           <CheckCircle2 className="size-4 text-[var(--brand-gold)]" strokeWidth={1.5} />
           <span>تنسيق الإطلالة الكاملة</span>

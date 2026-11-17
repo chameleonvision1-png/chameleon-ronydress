@@ -34,7 +34,7 @@ export default async function BookingPage({
         <BookingClient dresses={dresses} initialDressCode={sp.dress || sp.dresses} />
 
         <aside className="space-y-4">
-          <div className="rounded-[4px] border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-5 text-xs">
+          <div className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-5 text-xs">
             <h2 className="text-sm font-bold text-[var(--text-strong)]">بيانات الزيارة</h2>
             <div className="mt-3 space-y-3 text-[var(--text-primary)]">
               <div className="flex items-start gap-2">

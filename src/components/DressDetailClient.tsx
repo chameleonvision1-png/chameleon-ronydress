@@ -149,11 +149,11 @@ export function DressDetailClient({
               <div className="flex items-center gap-2">
                 <span
                   dir="ltr"
-                  className="rounded-[3px] border border-[var(--brand-gold)]/55 bg-[var(--bg-surface)] px-2.5 py-0.5 font-en text-[11px] font-bold tracking-[0.18em] text-[var(--brand-gold)]"
+                  className="rounded-full border border-[var(--brand-gold)]/55 bg-[var(--bg-surface)] px-2.5 py-0.5 font-en text-[11px] font-bold tracking-[0.18em] text-[var(--brand-gold)]"
                 >
                   {dress.code}
                 </span>
-                <span className="rounded-[3px] border border-[var(--border-subtle)] bg-[var(--bg-surface)] px-2.5 py-0.5 text-[11px] font-semibold text-[var(--text-primary)]">
+                <span className="rounded-full border border-[var(--border-subtle)] bg-[var(--bg-surface)] px-2.5 py-0.5 text-[11px] font-semibold text-[var(--text-primary)]">
                   {STATUS_LABELS_AR[dress.status] || "متاح للإيجار"}
                 </span>
               </div>
@@ -170,7 +170,7 @@ export function DressDetailClient({
                     occasionLabel: OCCASION_LABELS_AR[dress.occasions[0]] || "مناسبات",
                   })
                 }
-                className={`inline-flex h-8 items-center gap-1.5 rounded-[4px] border px-3 text-xs font-semibold transition-colors ${
+                className={`inline-flex h-8 items-center gap-1.5 rounded-2xl border px-3 text-xs font-semibold transition-colors ${
                   saved
                     ? "border-[var(--brand-gold)] bg-[var(--brand-gold)] text-[#FAF7F2]"
                     : "border-[var(--border-subtle)] bg-[var(--bg-surface)] text-[var(--text-strong)] hover:border-[var(--brand-gold)]"
@@ -197,7 +197,7 @@ export function DressDetailClient({
                 <Link
                   key={o}
                   href={`/collection?occasion=${o}`}
-                  className="rounded-[3px] border border-[var(--border-subtle)] bg-[var(--bg-surface)] px-2.5 py-1 text-[11px] font-medium text-[var(--text-strong)] transition-colors hover:border-[var(--brand-gold)] hover:text-[var(--brand-gold)]"
+                  className="rounded-full border border-[var(--border-subtle)] bg-[var(--bg-surface)] px-2.5 py-1 text-[11px] font-medium text-[var(--text-strong)] transition-colors hover:border-[var(--brand-gold)] hover:text-[var(--brand-gold)]"
                 >
                   {OCCASION_LABELS_AR[o]}
                 </Link>
@@ -205,7 +205,7 @@ export function DressDetailClient({
             </div>
 
             {/* Pricing / Atelier Policy Box */}
-            <div className="mt-4 rounded-[4px] border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-4">
+            <div className="mt-4 rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-4">
               {dress.showPrice && dress.rentPrice ? (
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <div>
@@ -248,13 +248,13 @@ export function DressDetailClient({
 
           {/* Fabric & Cut Specifications */}
           <div className="grid grid-cols-1 gap-3 text-xs sm:grid-cols-2">
-            <div className="rounded-[4px] border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-3.5">
+            <div className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-3.5">
               <p className="text-[11px] font-semibold text-[var(--text-muted)]">الخامة والتطريز</p>
               <p className="mt-1 font-medium leading-relaxed text-[var(--text-strong)]">
                 {dress.fabricAr}
               </p>
             </div>
-            <div className="rounded-[4px] border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-3.5">
+            <div className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-3.5">
               <p className="text-[11px] font-semibold text-[var(--text-muted)]">الطول والقصّة</p>
               <p className="mt-1 font-medium leading-relaxed text-[var(--text-strong)]">
                 {dress.lengthAr}
@@ -272,7 +272,7 @@ export function DressDetailClient({
                     key={c.nameAr}
                     type="button"
                     onClick={() => setSelectedColor(c.nameAr)}
-                    className={`inline-flex h-9 items-center gap-2 rounded-[4px] border px-3 text-xs font-medium transition-colors ${
+                    className={`inline-flex h-9 items-center gap-2 rounded-2xl border px-3 text-xs font-medium transition-colors ${
                       selectedColor === c.nameAr
                         ? "border-[var(--brand-gold)] bg-[var(--bg-surface)] text-[var(--text-strong)]"
                         : "border-[var(--border-subtle)] bg-[var(--bg-primary)] text-[var(--text-muted)] hover:border-[var(--brand-gold)]/60"
@@ -302,7 +302,7 @@ export function DressDetailClient({
                     key={sz}
                     type="button"
                     onClick={() => setSelectedSize(sz)}
-                    className={`h-9 min-w-12 rounded-[4px] border px-3 font-en text-xs font-bold transition-colors ${
+                    className={`h-9 min-w-12 rounded-2xl border px-3 font-en text-xs font-bold transition-colors ${
                       selectedSize === sz
                         ? "border-[var(--brand-gold)] bg-[var(--brand-gold)] text-[#FAF7F2]"
                         : "border-[var(--border-subtle)] bg-[var(--bg-surface)] text-[var(--text-strong)] hover:border-[var(--brand-gold)]"
@@ -315,7 +315,7 @@ export function DressDetailClient({
             </div>
 
             {dress.detailsAr.length > 0 && (
-              <ul className="space-y-1.5 rounded-[4px] border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-4 text-xs text-[var(--text-primary)]">
+              <ul className="space-y-1.5 rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-4 text-xs text-[var(--text-primary)]">
                 {dress.detailsAr.map((d) => (
                   <li key={d} className="flex items-start gap-2">
                     <ShieldCheck
@@ -330,12 +330,12 @@ export function DressDetailClient({
           </div>
 
           {/* Reservation / Bespoke Tailoring Dossier Form */}
-          <div className="rounded-[4px] border border-[var(--brand-gold)]/50 bg-[var(--bg-surface)] p-5">
-            <div className="mb-4 grid grid-cols-2 gap-1.5 rounded-[4px] border border-[var(--border-subtle)] bg-[var(--bg-primary)] p-1">
+          <div className="rounded-2xl border border-[var(--brand-gold)]/50 bg-[var(--bg-surface)] p-5">
+            <div className="mb-4 grid grid-cols-2 gap-1.5 rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-primary)] p-1">
               <button
                 type="button"
                 onClick={() => setActiveTab("rent")}
-                className={`h-9 rounded-[3px] text-xs font-bold transition-colors ${
+                className={`h-9 rounded-full text-xs font-bold transition-colors ${
                   activeTab === "rent"
                     ? "bg-[var(--brand-gold)] text-[#FAF7F2]"
                     : "text-[var(--text-muted)] hover:text-[var(--text-strong)]"
@@ -346,7 +346,7 @@ export function DressDetailClient({
               <button
                 type="button"
                 onClick={() => setActiveTab("tailor")}
-                className={`inline-flex h-9 items-center justify-center gap-1.5 rounded-[3px] text-xs font-bold transition-colors ${
+                className={`inline-flex h-9 items-center justify-center gap-1.5 rounded-full text-xs font-bold transition-colors ${
                   activeTab === "tailor"
                     ? "bg-[var(--brand-gold)] text-[#FAF7F2]"
                     : "text-[var(--text-muted)] hover:text-[var(--text-strong)]"
@@ -377,7 +377,7 @@ export function DressDetailClient({
                       href={submitted.whatsappUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex h-10 items-center justify-center gap-2 rounded-[4px] bg-[var(--brand-gold)] px-4 text-xs font-semibold text-[#FAF7F2]"
+                      className="inline-flex h-10 items-center justify-center gap-2 rounded-2xl bg-[var(--brand-gold)] px-4 text-xs font-semibold text-[#FAF7F2]"
                     >
                       <MessageCircle className="size-4" strokeWidth={1.5} />
                       <span>أرسلي تفاصيل الحجز عبر واتساب</span>
@@ -385,7 +385,7 @@ export function DressDetailClient({
                   )}
                   <Link
                     href={`/request/${submitted.id}`}
-                    className="inline-flex h-10 items-center justify-center rounded-[4px] border border-[var(--border-subtle)] bg-[var(--bg-primary)] px-4 text-xs font-semibold text-[var(--text-strong)]"
+                    className="inline-flex h-10 items-center justify-center rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-primary)] px-4 text-xs font-semibold text-[var(--text-strong)]"
                   >
                     صفحة متابعة الطلب
                   </Link>
@@ -403,7 +403,7 @@ export function DressDetailClient({
                     value={eventDate}
                     min={new Date().toISOString().slice(0, 10)}
                     onChange={(e) => checkAvailability(e.target.value)}
-                    className="h-10 w-full rounded-[4px] border border-[var(--border-subtle)] bg-[var(--bg-primary)] px-3 text-xs text-[var(--text-strong)] outline-none focus:border-[var(--brand-gold)]"
+                    className="h-10 w-full rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-primary)] px-3 text-xs text-[var(--text-strong)] outline-none focus:border-[var(--brand-gold)]"
                   />
                   {availLoading && (
                     <p className="mt-1 text-[11px] text-[var(--text-muted)]">
@@ -412,7 +412,7 @@ export function DressDetailClient({
                   )}
                   {availResult && (
                     <div
-                      className={`mt-2 flex items-start gap-2 rounded-[4px] border p-2.5 text-xs ${
+                      className={`mt-2 flex items-start gap-2 rounded-2xl border p-2.5 text-xs ${
                         availResult.available
                           ? "border-[var(--brand-gold)]/45 bg-[var(--brand-gold)]/10 text-[var(--text-strong)]"
                           : "border-[var(--border-subtle)] bg-[var(--bg-primary)] text-[var(--text-strong)]"
@@ -435,7 +435,7 @@ export function DressDetailClient({
                               <Link
                                 key={sg.code}
                                 href={`/dress/${sg.code}`}
-                                className="rounded-[3px] border border-[var(--border-subtle)] bg-[var(--bg-surface)] px-2 py-1 text-[11px] font-semibold text-[var(--brand-gold)] hover:border-[var(--brand-gold)]"
+                                className="rounded-full border border-[var(--border-subtle)] bg-[var(--bg-surface)] px-2 py-1 text-[11px] font-semibold text-[var(--brand-gold)] hover:border-[var(--brand-gold)]"
                               >
                                 {sg.code}: {sg.nameAr}
                               </Link>
@@ -458,7 +458,7 @@ export function DressDetailClient({
                       value={customerName}
                       onChange={(e) => setCustomerName(e.target.value)}
                       placeholder="مثال: سلمى أحمد"
-                      className="h-10 w-full rounded-[4px] border border-[var(--border-subtle)] bg-[var(--bg-primary)] px-3 text-xs text-[var(--text-strong)] outline-none focus:border-[var(--brand-gold)]"
+                      className="h-10 w-full rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-primary)] px-3 text-xs text-[var(--text-strong)] outline-none focus:border-[var(--brand-gold)]"
                     />
                   </div>
                   <div>
@@ -472,7 +472,7 @@ export function DressDetailClient({
                       value={customerPhone}
                       onChange={(e) => setCustomerPhone(e.target.value)}
                       placeholder="01xxxxxxxxx"
-                      className="h-10 w-full rounded-[4px] border border-[var(--border-subtle)] bg-[var(--bg-primary)] px-3 text-xs text-[var(--text-strong)] outline-none focus:border-[var(--brand-gold)]"
+                      className="h-10 w-full rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-primary)] px-3 text-xs text-[var(--text-strong)] outline-none focus:border-[var(--brand-gold)]"
                     />
                   </div>
                 </div>
@@ -490,12 +490,12 @@ export function DressDetailClient({
                         ? "اكتبي اللون المفضل أو أي تعديل تحبيه في التصميم"
                         : "مثال: أحتاج موعد بروفة مساءً أو تنسيق طرحة متطابقة"
                     }
-                    className="w-full rounded-[4px] border border-[var(--border-subtle)] bg-[var(--bg-primary)] px-3 py-2 text-xs text-[var(--text-strong)] outline-none focus:border-[var(--brand-gold)]"
+                    className="w-full rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-primary)] px-3 py-2 text-xs text-[var(--text-strong)] outline-none focus:border-[var(--brand-gold)]"
                   />
                 </div>
 
                 {submitError && (
-                  <p className="rounded-[4px] bg-[#3A2930] px-3 py-2 text-xs text-[#FAF7F2]">
+                  <p className="rounded-2xl bg-[#3A2930] px-3 py-2 text-xs text-[#FAF7F2]">
                     {submitError}
                   </p>
                 )}
@@ -503,7 +503,7 @@ export function DressDetailClient({
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="h-11 w-full rounded-[4px] bg-[var(--brand-gold)] text-sm font-bold text-[#FAF7F2] transition-colors hover:bg-[var(--brand-gold-hover)] disabled:opacity-60"
+                  className="h-11 w-full rounded-2xl bg-[var(--brand-gold)] text-sm font-bold text-[#FAF7F2] transition-colors hover:bg-[var(--brand-gold-hover)] disabled:opacity-60"
                 >
                   {submitting
                     ? "جارٍ تسجيل الطلب..."
@@ -515,7 +515,7 @@ export function DressDetailClient({
                 <div className="grid grid-cols-2 gap-2 pt-1">
                   <Link
                     href={`/booking?dress=${encodeURIComponent(dress.code)}`}
-                    className="inline-flex h-10 items-center justify-center gap-1.5 rounded-[4px] border border-[var(--border-subtle)] bg-[var(--bg-primary)] text-xs font-semibold text-[var(--text-strong)] transition-colors hover:border-[var(--brand-gold)]"
+                    className="inline-flex h-10 items-center justify-center gap-1.5 rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-primary)] text-xs font-semibold text-[var(--text-strong)] transition-colors hover:border-[var(--brand-gold)]"
                   >
                     <CalendarCheck className="size-3.5 text-[var(--brand-gold)]" strokeWidth={1.5} />
                     <span>موعد بروفة</span>
@@ -526,7 +526,7 @@ export function DressDetailClient({
                       href={directWa}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex h-10 items-center justify-center gap-1.5 rounded-[4px] border border-[var(--border-subtle)] bg-[var(--bg-primary)] text-xs font-semibold text-[var(--text-strong)] transition-colors hover:border-[var(--brand-gold)]"
+                      className="inline-flex h-10 items-center justify-center gap-1.5 rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-primary)] text-xs font-semibold text-[var(--text-strong)] transition-colors hover:border-[var(--brand-gold)]"
                     >
                       <MessageCircle className="size-3.5 text-[var(--brand-gold)]" strokeWidth={1.5} />
                       <span>استفسار واتساب</span>
@@ -534,7 +534,7 @@ export function DressDetailClient({
                   ) : (
                     <Link
                       href="/contact"
-                      className="inline-flex h-10 items-center justify-center gap-1.5 rounded-[4px] border border-[var(--border-subtle)] bg-[var(--bg-primary)] text-xs font-semibold text-[var(--text-strong)] transition-colors hover:border-[var(--brand-gold)]"
+                      className="inline-flex h-10 items-center justify-center gap-1.5 rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-primary)] text-xs font-semibold text-[var(--text-strong)] transition-colors hover:border-[var(--brand-gold)]"
                     >
                       <MessageCircle className="size-3.5 text-[var(--brand-gold)]" strokeWidth={1.5} />
                       <span>تواصلي معنا</span>

@@ -78,11 +78,11 @@ export function AtelierOrbitCarousel({ dresses }: AtelierOrbitCarouselProps) {
 
   const [dims, setDims] = React.useState({
     w: 1180,
-    stageH: 416,
-    gownW: 256,
-    gownH: 384,
-    radiusX: 430,
-    floorY: 336,
+    stageH: 486,
+    gownW: 312,
+    gownH: 468,
+    radiusX: 455,
+    floorY: 406,
   });
 
   const simRef = React.useRef({
@@ -122,15 +122,15 @@ export function AtelierOrbitCarousel({ dresses }: AtelierOrbitCarouselProps) {
       const isMobile = w < 640;
 
       const gownH = isMobile
-        ? clamp(Math.round(vh * 0.39), 264, 332)
-        : clamp(Math.round(vh * 0.44), 320, 404);
+        ? clamp(Math.round(vh * 0.48), 348, 435)
+        : clamp(Math.round(vh * 0.52), 400, 490);
       const gownW = Math.round(gownH * (2 / 3));
       const radiusX = isMobile
-        ? Math.min(Math.round(w * 0.365), 160)
-        : Math.min(Math.round(w * 0.375), 445);
+        ? Math.min(Math.round(w * 0.385), 172)
+        : Math.min(Math.round(w * 0.385), 465);
       const radiusY = Math.round(radiusX * ELLIPSE_RATIO);
-      const stageH = gownH + (isMobile ? 20 : 24);
-      const floorY = stageH - radiusY - (isMobile ? 10 : 12);
+      const stageH = gownH + (isMobile ? 18 : 22);
+      const floorY = stageH - radiusY - (isMobile ? 9 : 11);
 
       simRef.current.radiusX = radiusX;
       setDims((old) =>
@@ -395,7 +395,7 @@ export function AtelierOrbitCarousel({ dresses }: AtelierOrbitCarouselProps) {
       aria-label="معرض فساتين Rony Dress الدائري"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      className="relative isolate w-full overflow-hidden border-b border-[var(--border-subtle)] bg-[var(--bg-stage)] text-[var(--text-primary)]"
+      className="relative isolate flex min-h-[calc(100svh-5.4rem)] w-full flex-col justify-between overflow-hidden border-b border-[var(--border-subtle)] bg-[var(--bg-stage)] text-[var(--text-primary)] lg:min-h-[calc(100svh-4.1rem)]"
     >
       {/* Clean Architectural Studio Light Wash (Zero SVG Wireframes) */}
       <div
@@ -407,13 +407,16 @@ export function AtelierOrbitCarousel({ dresses }: AtelierOrbitCarouselProps) {
         }}
       />
 
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        {/* Symmetric Couture Header (MO WORLD Proportions) */}
-        <header className="mx-auto flex max-w-3xl flex-col items-center gap-1.5 pt-5 text-center sm:pt-7">
-          <p dir="ltr" className="micro-label text-[var(--text-muted)]">
-            RONY DRESS • COUTURE &amp; BRIDAL ATELIER
+      <div className="mx-auto flex w-full max-w-7xl flex-1 flex-col justify-between px-4 py-4 sm:px-6 sm:py-6 lg:px-8">
+        {/* Symmetric Single-Line Eyebrow & Couture Headline */}
+        <header className="mx-auto flex max-w-3xl flex-col items-center gap-1 text-center">
+          <p
+            dir="ltr"
+            className="font-en text-[10px] font-semibold tracking-[0.22em] whitespace-nowrap text-[var(--text-muted)] uppercase sm:text-[11px]"
+          >
+            RONY DRESS • COUTURE ATELIER
           </p>
-          <h1 className="text-balance text-xl font-bold tracking-tight text-[var(--text-strong)] sm:text-3xl">
+          <h1 className="text-balance text-2xl font-bold tracking-tight text-[var(--text-strong)] sm:text-3xl lg:text-[34px]">
             إطلالات ملكية تنبض بالتفاصيل
           </h1>
         </header>
@@ -518,7 +521,7 @@ export function AtelierOrbitCarousel({ dresses }: AtelierOrbitCarouselProps) {
                     }}
                     dir="ltr"
                     style={{ opacity: i === 0 ? 1 : 0 }}
-                    className="pointer-events-none absolute right-0 top-[9%] rounded-[3px] border border-[var(--border-subtle)] bg-[var(--bg-primary)]/92 px-2 py-0.5 font-en text-[9px] font-semibold tracking-[0.16em] text-[var(--text-primary)] shadow-2xs transition-opacity duration-200"
+                    className="pointer-events-none absolute right-0 top-[8%] rounded-full border border-[var(--border-subtle)] bg-[var(--bg-primary)]/92 px-2.5 py-0.5 font-en text-[9px] font-semibold tracking-[0.14em] text-[var(--text-primary)] shadow-2xs transition-opacity duration-200"
                   >
                     {dress.code}
                   </span>
@@ -528,70 +531,69 @@ export function AtelierOrbitCarousel({ dresses }: AtelierOrbitCarouselProps) {
           })}
         </div>
 
-        {/* Minimal MO WORLD Station Indicator Bars */}
-        {count > 1 && (
-          <div
-            dir="ltr"
-            role="group"
-            aria-label="اختيار الفستان"
-            className="relative z-10 mt-2 flex justify-center gap-1.5"
-          >
-            {dresses.map((d, i) => (
-              <button
-                key={d.code}
-                type="button"
-                aria-label={`عرض ${d.nameAr}`}
-                aria-current={activeIndex === i}
-                onClick={() => {
-                  stopAutoplay();
-                  choose(i);
-                }}
-                className={`h-1.5 rounded-[2px] outline-none transition-[width,background-color] duration-300 ${
-                  activeIndex === i
-                    ? "w-6 bg-[var(--brand-gold)]"
-                    : "w-1.5 bg-foreground/22 hover:bg-foreground/45"
-                }`}
-              />
-            ))}
-          </div>
-        )}
+        {/* Soft Capsule Indicator Dots + Symmetric Caption & Capsule CTAs */}
+        <div className="relative z-10 flex flex-col items-center gap-2.5 text-center">
+          {count > 1 && (
+            <div
+              dir="ltr"
+              role="group"
+              aria-label="اختيار الفستان"
+              className="flex justify-center gap-1.5"
+            >
+              {dresses.map((d, i) => (
+                <button
+                  key={d.code}
+                  type="button"
+                  aria-label={`عرض ${d.nameAr}`}
+                  aria-current={activeIndex === i}
+                  onClick={() => {
+                    stopAutoplay();
+                    choose(i);
+                  }}
+                  className={`h-1.5 rounded-full outline-none transition-[width,background-color] duration-300 ${
+                    activeIndex === i
+                      ? "w-6 bg-[var(--brand-gold)]"
+                      : "w-1.5 bg-foreground/22 hover:bg-foreground/45"
+                  }`}
+                />
+              ))}
+            </div>
+          )}
 
-        {/* Symmetric Editorial Caption & Dual CTAs (MO WORLD Signature Layout) */}
-        <div className="relative z-10 flex flex-col items-center gap-3.5 pb-6 pt-3 text-center sm:pb-8">
           <div
             id={`${uid}-caption`}
             aria-live="polite"
-            className="flex min-h-[4.2rem] max-w-xl flex-col items-center justify-center"
+            className="flex max-w-md flex-col items-center justify-center"
           >
             <span
               dir="ltr"
-              className="mb-0.5 font-en text-[10px] font-semibold tracking-[0.24em] text-[var(--brand-gold)]"
+              className="font-en text-[10px] font-semibold tracking-[0.2em] text-[var(--brand-gold)]"
             >
               {primaryHouse} {"//"} {activeDress.code}
             </span>
-            <p className="line-clamp-1 text-sm font-bold text-[var(--text-strong)] sm:text-base">
+            <p className="mt-0.5 line-clamp-1 text-base font-bold text-[var(--text-strong)] sm:text-lg">
               {activeDress.nameAr}
             </p>
-            <p className="mx-auto mt-0.5 line-clamp-2 max-w-[46ch] text-xs leading-relaxed text-[var(--text-muted)] sm:text-[13px]">
-              اسحبي بهدوء للتنقل بين الموديلات، أو اضغطي على الفستان لمعاينة الوجه والظهر
+            <p className="mt-0.5 text-xs text-[var(--text-muted)]">
+              اسحبي للتنقل بين الموديلات أو اضغطي على الفستان لمعاينة الأمام والظهر
             </p>
           </div>
 
-          <div className="grid w-full max-w-[336px] grid-cols-2 gap-2.5 sm:max-w-sm">
+          <div className="mt-1 grid w-full max-w-[344px] grid-cols-2 gap-2.5 sm:max-w-sm">
             <button
               type="button"
               onClick={() => {
                 stopAutoplay();
                 setOpenIndex(activeIndex);
               }}
-              className="inline-flex h-10 items-center justify-center gap-1.5 rounded-[4px] bg-[var(--brand-gold)] px-3 text-xs font-semibold text-[#F7F6F3] whitespace-nowrap transition-colors hover:bg-[var(--brand-gold-hover)]"
+              className="inline-flex h-11 items-center justify-center gap-1.5 rounded-full bg-[var(--brand-gold)] px-4 text-xs font-semibold text-[#F7F6F3] whitespace-nowrap transition-colors hover:bg-[var(--brand-gold-hover)]"
             >
               <span>معاينة الأمام والظهر</span>
               <ArrowLeft className="size-3.5 shrink-0" strokeWidth={1.5} />
             </button>
             <Link
               href="/collection"
-              className="inline-flex h-10 items-center justify-center rounded-[4px] border border-[var(--border-subtle)] bg-[var(--bg-surface)] px-3 text-xs font-semibold text-[var(--text-primary)] whitespace-nowrap transition-colors hover:border-[var(--text-primary)]"
+              className="inline-flex h-11 items-center justify-center rounded-full border border-[var(--border-subtle)] bg-[var(--bg-surface)] px-4 text-xs font-semibold text-[var(--text-primary)] whitespace-nowrap transition-colors hover:border-[var(--text-primary)]"
             >
               تصفحي الكولكشن
             </Link>
@@ -820,7 +822,7 @@ function CoutureLiftModal({
       <button
         type="button"
         onClick={dismiss}
-        className={`fixed left-5 top-5 z-20 inline-flex items-center gap-2 rounded-[4px] border border-[var(--border-subtle)] bg-[var(--bg-surface)] px-3.5 py-2 text-xs font-medium text-[var(--text-primary)] outline-none transition-[opacity,border-color] duration-300 hover:border-[var(--text-primary)] ${
+        className={`fixed left-5 top-5 z-20 inline-flex items-center gap-2 rounded-full border border-[var(--border-subtle)] bg-[var(--bg-surface)] px-4 py-2 text-xs font-medium text-[var(--text-primary)] outline-none transition-[opacity,border-color] duration-300 hover:border-[var(--text-primary)] ${
           shown ? "opacity-100" : "opacity-0"
         }`}
       >
@@ -962,11 +964,11 @@ function CoutureLiftModal({
             </span>
             <span
               dir="ltr"
-              className="rounded-[4px] border border-[var(--border-subtle)] bg-[var(--bg-surface)] px-2 py-0.5 font-en text-[10px] font-medium tracking-wider text-[var(--text-muted)]"
+              className="rounded-full border border-[var(--border-subtle)] bg-[var(--bg-surface)] px-2.5 py-0.5 font-en text-[10px] font-medium tracking-wider text-[var(--text-muted)]"
             >
               {dress.code}
             </span>
-            <span className="rounded-[4px] border border-[var(--border-subtle)] bg-[var(--bg-surface)] px-2 py-0.5 text-[10.5px] font-semibold text-[var(--text-primary)]">
+            <span className="rounded-full border border-[var(--border-subtle)] bg-[var(--bg-surface)] px-2.5 py-0.5 text-[10.5px] font-semibold text-[var(--text-primary)]">
               {STATUS_LABELS_AR[dress.status] ?? "متاح للإيجار"}
             </span>
           </div>
@@ -1018,13 +1020,13 @@ function CoutureLiftModal({
               <span className="text-[11px] text-[var(--text-muted)]">تضييق وضبط مجاني بالبروفة</span>
             </div>
 
-            <div className="grid grid-cols-4 gap-1.5">
+            <div className="grid grid-cols-4 gap-2">
               {dress.sizes.map((sz) => (
                 <button
                   key={sz}
                   type="button"
                   onClick={() => setSelectedSize(sz)}
-                  className={`rounded-[4px] border py-2 font-en text-xs font-semibold transition-colors ${
+                  className={`rounded-full border py-2 font-en text-xs font-semibold transition-colors ${
                     selectedSize === sz
                       ? "border-[var(--brand-gold)] bg-[var(--brand-gold)] text-[#F7F6F3]"
                       : "border-[var(--border-subtle)] bg-[var(--bg-surface)] text-[var(--text-primary)] hover:border-[var(--text-primary)]"
@@ -1039,7 +1041,7 @@ function CoutureLiftModal({
               <Link
                 href={`/dress/${dress.code}`}
                 onClick={onClose}
-                className="inline-flex h-11 items-center justify-center gap-2 rounded-[4px] bg-[var(--brand-gold)] px-4 text-xs font-semibold text-[#F7F6F3] transition-colors hover:bg-[var(--brand-gold-hover)]"
+                className="inline-flex h-11 items-center justify-center gap-2 rounded-full bg-[var(--brand-gold)] px-5 text-xs font-semibold text-[#F7F6F3] transition-colors hover:bg-[var(--brand-gold-hover)]"
               >
                 <CalendarCheck className="size-4" strokeWidth={1.5} />
                 <span>افتحي صفحة الحجز وفحص التاريخ — مقاس {selectedSize}</span>
@@ -1057,7 +1059,7 @@ function CoutureLiftModal({
                   })
                 }
                 aria-label={saved ? "إزالة من اختياراتي" : "حفظ للبروفة"}
-                className={`inline-flex size-11 items-center justify-center rounded-[4px] border transition-colors ${
+                className={`inline-flex size-11 items-center justify-center rounded-full border transition-colors ${
                   saved
                     ? "border-[var(--brand-gold)] bg-[var(--brand-gold)] text-[#F7F6F3]"
                     : "border-[var(--border-subtle)] bg-[var(--bg-surface)] text-[var(--text-primary)] hover:border-[var(--text-primary)]"

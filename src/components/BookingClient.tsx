@@ -68,7 +68,7 @@ export function BookingClient({
 
   if (done) {
     return (
-      <div className="mx-auto max-w-xl rounded-[4px] border border-[var(--brand-gold)]/50 bg-[var(--bg-surface)] p-8 text-center">
+      <div className="mx-auto max-w-xl rounded-2xl border border-[var(--brand-gold)]/50 bg-[var(--bg-surface)] p-8 text-center">
         <CheckCircle2 className="mx-auto h-12 w-12 text-[var(--brand-gold)]" />
         <h2 className="mt-4 text-xl font-bold text-[var(--text-strong)]">
           تم حجز موعد الزيارة بنجاح
@@ -103,7 +103,7 @@ export function BookingClient({
   return (
     <form
       onSubmit={handleSubmit}
-      className="space-y-5 rounded-[4px] border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-6 md:p-8"
+      className="space-y-5 rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-6 md:p-8"
     >
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div>

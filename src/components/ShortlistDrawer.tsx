@@ -50,7 +50,7 @@ export function ShortlistDrawer() {
             type="button"
             onClick={() => setDrawerOpen(false)}
             aria-label="إغلاق القائمة"
-            className="flex size-9 items-center justify-center rounded-[4px] border border-[var(--border-subtle)] text-[var(--text-primary)] transition-colors hover:border-[var(--brand-gold)]"
+            className="flex size-9 items-center justify-center rounded-2xl border border-[var(--border-subtle)] text-[var(--text-primary)] transition-colors hover:border-[var(--brand-gold)]"
           >
             <X className="size-4" strokeWidth={1.5} />
           </button>
@@ -59,7 +59,7 @@ export function ShortlistDrawer() {
         <div className="flex-1 overflow-y-auto p-5" data-modal-scroll>
           {items.length === 0 ? (
             <div className="flex h-full flex-col items-center justify-center py-14 text-center">
-              <div className="flex size-14 items-center justify-center rounded-[4px] border border-[var(--border-subtle)] bg-[var(--bg-surface)] text-[var(--brand-gold)]">
+              <div className="flex size-14 items-center justify-center rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] text-[var(--brand-gold)]">
                 <Heart className="size-6" strokeWidth={1.5} />
               </div>
               <p className="mt-4 text-sm font-semibold text-[var(--text-strong)]">
@@ -71,7 +71,7 @@ export function ShortlistDrawer() {
               <Link
                 href="/collection"
                 onClick={() => setDrawerOpen(false)}
-                className="mt-5 inline-flex h-10 items-center justify-center rounded-[4px] bg-[var(--brand-gold)] px-5 text-xs font-semibold text-[#FAF7F2]"
+                className="mt-5 inline-flex h-10 items-center justify-center rounded-2xl bg-[var(--brand-gold)] px-5 text-xs font-semibold text-[#FAF7F2]"
               >
                 شاهدي الكولكشن
               </Link>
@@ -81,12 +81,12 @@ export function ShortlistDrawer() {
               {items.map((item) => (
                 <div
                   key={item.code}
-                  className="flex items-center gap-3 rounded-[4px] border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-2.5"
+                  className="flex items-center gap-3 rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-2.5"
                 >
                   <Link
                     href={`/dress/${item.code}`}
                     onClick={() => setDrawerOpen(false)}
-                    className="flex h-20 w-14 shrink-0 items-center justify-center overflow-hidden rounded-[3px] border border-[var(--border-subtle)] bg-[var(--bg-stage)] p-1"
+                    className="flex h-20 w-14 shrink-0 items-center justify-center overflow-hidden rounded-full border border-[var(--border-subtle)] bg-[var(--bg-stage)] p-1"
                   >
                     <img
                       src={item.image}
@@ -102,7 +102,7 @@ export function ShortlistDrawer() {
                       >
                         {item.code}
                       </span>
-                      <span className="rounded-[3px] border border-[var(--border-subtle)] bg-[var(--bg-primary)] px-2 py-0.5 text-[10px] font-medium text-[var(--text-muted)]">
+                      <span className="rounded-full border border-[var(--border-subtle)] bg-[var(--bg-primary)] px-2 py-0.5 text-[10px] font-medium text-[var(--text-muted)]">
                         {STATUS_LABELS_AR[item.status] || "متاح"}
                       </span>
                     </div>
@@ -119,7 +119,7 @@ export function ShortlistDrawer() {
                     type="button"
                     onClick={() => removeItem(item.code)}
                     aria-label={`إزالة ${item.nameAr}`}
-                    className="flex size-8 shrink-0 items-center justify-center rounded-[4px] border border-transparent text-[var(--text-muted)] transition-colors hover:border-[var(--border-subtle)] hover:text-[var(--text-strong)]"
+                    className="flex size-8 shrink-0 items-center justify-center rounded-2xl border border-transparent text-[var(--text-muted)] transition-colors hover:border-[var(--border-subtle)] hover:text-[var(--text-strong)]"
                   >
                     <Trash2 className="size-4" strokeWidth={1.5} />
                   </button>
@@ -134,7 +134,7 @@ export function ShortlistDrawer() {
             <Link
               href={`/booking?dresses=${encodeURIComponent(firstCodes)}`}
               onClick={() => setDrawerOpen(false)}
-              className="flex h-11 w-full items-center justify-center gap-2 rounded-[4px] bg-[var(--brand-gold)] px-4 text-sm font-semibold text-[#FAF7F2] transition-colors hover:bg-[var(--brand-gold-hover)]"
+              className="flex h-11 w-full items-center justify-center gap-2 rounded-2xl bg-[var(--brand-gold)] px-4 text-sm font-semibold text-[#FAF7F2] transition-colors hover:bg-[var(--brand-gold-hover)]"
             >
               <CalendarCheck className="size-4" strokeWidth={1.5} />
               <span>احجزي موعد بروفة ({items.length})</span>

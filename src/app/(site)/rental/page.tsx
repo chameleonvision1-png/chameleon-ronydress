@@ -75,10 +75,10 @@ export default async function RentalPolicyPage() {
           return (
             <div
               key={p.title}
-              className="rounded-[4px] border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-6"
+              className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-6"
             >
               <div className="flex items-center gap-2.5">
-                <span className="flex size-9 items-center justify-center rounded-[4px] border border-[var(--border-subtle)] bg-[var(--bg-primary)] text-[var(--brand-gold)]">
+                <span className="flex size-9 items-center justify-center rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-primary)] text-[var(--brand-gold)]">
                   <Icon className="size-4" strokeWidth={1.5} />
                 </span>
                 <h2 className="text-base font-bold text-[var(--text-strong)]">{p.title}</h2>
@@ -89,7 +89,7 @@ export default async function RentalPolicyPage() {
         })}
       </div>
 
-      <div className="mt-10 flex flex-col items-center justify-between gap-4 rounded-[4px] border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-6 sm:flex-row md:p-8">
+      <div className="mt-10 flex flex-col items-center justify-between gap-4 rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-6 sm:flex-row md:p-8">
         <div className="flex items-start gap-3">
           <CheckCircle2
             className="mt-0.5 size-5 shrink-0 text-[var(--brand-gold)]"
@@ -107,13 +107,13 @@ export default async function RentalPolicyPage() {
         <div className="flex shrink-0 gap-2.5">
           <Link
             href="/collection"
-            className="inline-flex h-10 items-center justify-center rounded-[4px] bg-[var(--brand-gold)] px-5 text-xs font-bold text-[#FAF7F2]"
+            className="inline-flex h-10 items-center justify-center rounded-2xl bg-[var(--brand-gold)] px-5 text-xs font-bold text-[#FAF7F2]"
           >
             شاهدي الكولكشن
           </Link>
           <Link
             href="/booking"
-            className="inline-flex h-10 items-center justify-center rounded-[4px] border border-[var(--border-subtle)] bg-[var(--bg-primary)] px-5 text-xs font-bold text-[var(--text-strong)] hover:border-[var(--brand-gold)]"
+            className="inline-flex h-10 items-center justify-center rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-primary)] px-5 text-xs font-bold text-[var(--text-strong)] hover:border-[var(--brand-gold)]"
           >
             حجز موعد
           </Link>

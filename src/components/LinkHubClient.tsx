@@ -59,7 +59,7 @@ export function LinkHubClient({
 
   return (
     <div className="mx-auto max-w-lg px-4 py-12 text-center">
-      <div className="rounded-[4px] border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-7">
+      <div className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-7">
         <BrandLogo variant="full" className="mx-auto h-24" />
         <h1 className="mt-4 text-xl font-bold text-[var(--text-strong)]">
           {settings.storeName} — {settings.storeNameAr}
@@ -73,10 +73,10 @@ export function LinkHubClient({
           {links.map((item) => {
             const Icon = item.icon;
             const cls =
-              "flex items-center gap-3 rounded-[4px] border border-[var(--border-subtle)] bg-[var(--bg-primary)] px-4 py-3.5 transition-colors hover:border-[var(--brand-gold)]";
+              "flex items-center gap-3 rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-primary)] px-4 py-3.5 transition-colors hover:border-[var(--brand-gold)]";
             const inner = (
               <>
-                <span className="flex size-9 shrink-0 items-center justify-center rounded-[4px] border border-[var(--border-subtle)] bg-[var(--bg-surface)] text-[var(--brand-gold)]">
+                <span className="flex size-9 shrink-0 items-center justify-center rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] text-[var(--brand-gold)]">
                   <Icon className="size-4" strokeWidth={1.5} />
                 </span>
                 <div className="min-w-0 flex-1">
@@ -101,9 +101,9 @@ export function LinkHubClient({
               href={waUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-3 rounded-[4px] bg-[var(--brand-gold)] px-4 py-3.5 text-[#FAF7F2]"
+              className="flex items-center gap-3 rounded-2xl bg-[var(--brand-gold)] px-4 py-3.5 text-[#FAF7F2]"
             >
-              <span className="flex size-9 shrink-0 items-center justify-center rounded-[4px] bg-white/15">
+              <span className="flex size-9 shrink-0 items-center justify-center rounded-2xl bg-white/15">
                 <MessageCircle className="size-4" strokeWidth={1.5} />
               </span>
               <div className="min-w-0 flex-1">
@@ -117,7 +117,7 @@ export function LinkHubClient({
         <button
           type="button"
           onClick={() => setQrOpen(true)}
-          className="mt-6 inline-flex h-10 items-center justify-center gap-2 rounded-[4px] border border-[var(--brand-gold)] bg-[var(--bg-primary)] px-5 text-xs font-bold text-[var(--brand-gold)] transition-colors hover:bg-[var(--brand-gold)] hover:text-[#FAF7F2]"
+          className="mt-6 inline-flex h-10 items-center justify-center gap-2 rounded-2xl border border-[var(--brand-gold)] bg-[var(--bg-primary)] px-5 text-xs font-bold text-[var(--brand-gold)] transition-colors hover:bg-[var(--brand-gold)] hover:text-[#FAF7F2]"
         >
           <QrCode className="size-4" strokeWidth={1.5} />
           <span>عرض وتحميل رمز QR</span>

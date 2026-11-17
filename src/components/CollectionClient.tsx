@@ -6,13 +6,21 @@ import type { AtelierCategory, Dress, Occasion } from "@/lib/types";
 import { STATUS_LABELS_AR } from "@/lib/whatsapp";
 import { DressCard } from "./DressCard";
 
+const SHORT_OCCASIONS: Array<{ slug: string; labelAr: string }> = [
+  { slug: "all", labelAr: "الكل" },
+  { slug: "engagement", labelAr: "خطوبة" },
+  { slug: "soiree", labelAr: "سواريه" },
+  { slug: "katb-ketab", labelAr: "كتب كتاب" },
+  { slug: "bridal", labelAr: "زفاف" },
+  { slug: "handmade", labelAr: "هاند ميد" },
+];
+
 export function CollectionClient({
   dresses,
-  categories,
   initialOccasion,
 }: {
   dresses: Dress[];
-  categories: AtelierCategory[];
+  categories?: AtelierCategory[];
   initialOccasion?: string;
 }) {
   const [occasion, setOccasion] = React.useState<string>(initialOccasion || "all");
@@ -49,60 +57,47 @@ export function CollectionClient({
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 md:py-12 lg:px-8">
-      <div className="border-b border-[var(--border-subtle)] pb-6">
+      <div className="text-center sm:text-right">
         <p dir="ltr" className="micro-label text-[var(--brand-gold)]">
-          RONY DRESS // ATELIER ARCHIVE
+          ATELIER ARCHIVE
         </p>
-        <h1 className="mt-1.5 text-2xl font-bold text-[var(--text-strong)] md:text-4xl">
-          كولكشن فساتين أتيليه فستان ست البنات
+        <h1 className="mt-1 text-2xl font-bold text-[var(--text-strong)] md:text-3xl">
+          كتالوج فساتين Rony Dress
         </h1>
-        <p className="mt-2 max-w-2xl text-xs text-[var(--text-muted)] sm:text-sm">
-          تصفحي الفساتين حسب المناسبة، المقاس، أو الخدمة المتاحة. افتحي أي فستان لاستعراضه ٣٦٠° على المنصة الدوارة والتحقق من توفر تاريخك.
-        </p>
       </div>
 
-      {/* Couture Filters Toolbar */}
-      <div className="mt-6 space-y-3.5 rounded-[4px] border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-4">
-        <div className="flex flex-wrap items-center gap-2">
-          <button
-            type="button"
-            onClick={() => setOccasion("all")}
-            className={`h-9 rounded-[4px] border px-3.5 text-xs font-semibold transition-colors ${
-              occasion === "all"
-                ? "border-[var(--brand-gold)] bg-[var(--brand-gold)] text-[#FAF7F2]"
-                : "border-[var(--border-subtle)] bg-[var(--bg-primary)] text-[var(--text-strong)] hover:border-[var(--brand-gold)]"
-            }`}
-          >
-            الكل ({dresses.length})
-          </button>
-          {categories.map((cat) => (
+      {/* Soft Couture Filters Card */}
+      <div className="mt-5 space-y-3 rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-4">
+        {/* Symmetric 3x2 Capsule Grid on Mobile, Flex Row on Desktop */}
+        <div className="grid grid-cols-3 gap-2 sm:flex sm:flex-wrap sm:items-center">
+          {SHORT_OCCASIONS.map((item) => (
             <button
-              key={cat.id}
+              key={item.slug}
               type="button"
-              onClick={() => setOccasion(cat.slug)}
-              className={`h-9 rounded-[4px] border px-3.5 text-xs font-semibold transition-colors ${
-                occasion === cat.slug
-                  ? "border-[var(--brand-gold)] bg-[var(--brand-gold)] text-[#FAF7F2]"
+              onClick={() => setOccasion(item.slug)}
+              className={`h-9 rounded-full border px-3.5 text-xs font-semibold whitespace-nowrap transition-colors sm:px-5 ${
+                occasion === item.slug
+                  ? "border-[var(--brand-gold)] bg-[var(--brand-gold)] text-[#F7F6F3]"
                   : "border-[var(--border-subtle)] bg-[var(--bg-primary)] text-[var(--text-strong)] hover:border-[var(--brand-gold)]"
               }`}
             >
-              {cat.nameAr}
+              {item.labelAr}
             </button>
           ))}
         </div>
 
-        <div className="grid grid-cols-1 gap-2.5 md:grid-cols-4">
+        <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 lg:grid-cols-4">
           <div className="relative">
             <Search
-              className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-[var(--text-muted)]"
+              className="pointer-events-none absolute top-1/2 right-3.5 size-4 -translate-y-1/2 text-[var(--text-muted)]"
               strokeWidth={1.5}
             />
             <input
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="ابحثي بالاسم أو الكود (RD-01)..."
-              className="h-10 w-full rounded-[4px] border border-[var(--border-subtle)] bg-[var(--bg-primary)] pr-9 pl-3 text-xs text-[var(--text-strong)] outline-none focus:border-[var(--brand-gold)]"
+              placeholder="ابحثي بالاسم أو الكود..."
+              className="h-10 w-full rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-primary)] pr-9 pl-3 text-xs text-[var(--text-strong)] outline-none focus:border-[var(--brand-gold)]"
             />
           </div>
 
@@ -115,11 +110,11 @@ export function CollectionClient({
               value={modeFilter}
               onChange={(e) => setModeFilter(e.target.value)}
               aria-label="تصفية حسب الخدمة"
-              className="h-10 w-full rounded-[4px] border border-[var(--border-subtle)] bg-[var(--bg-primary)] px-3 text-xs text-[var(--text-strong)] outline-none focus:border-[var(--brand-gold)]"
+              className="h-10 w-full rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-primary)] px-3 text-xs text-[var(--text-strong)] outline-none focus:border-[var(--brand-gold)]"
             >
               <option value="all">كل الخدمات (إيجار / تفصيل)</option>
               <option value="rent">متاح للإيجار</option>
-              <option value="tailor">متاح للتفصيل والطلب</option>
+              <option value="tailor">متاح للتفصيل</option>
             </select>
           </div>
 
@@ -127,7 +122,7 @@ export function CollectionClient({
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
             aria-label="تصفية حسب الحالة"
-            className="h-10 w-full rounded-[4px] border border-[var(--border-subtle)] bg-[var(--bg-primary)] px-3 text-xs text-[var(--text-strong)] outline-none focus:border-[var(--brand-gold)]"
+            className="h-10 w-full rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-primary)] px-3 text-xs text-[var(--text-strong)] outline-none focus:border-[var(--brand-gold)]"
           >
             <option value="all">جميع الحالات</option>
             {Object.entries(STATUS_LABELS_AR).map(([val, label]) => (
@@ -141,9 +136,9 @@ export function CollectionClient({
             value={sizeFilter}
             onChange={(e) => setSizeFilter(e.target.value)}
             aria-label="تصفية حسب المقاس"
-            className="h-10 w-full rounded-[4px] border border-[var(--border-subtle)] bg-[var(--bg-primary)] px-3 text-xs text-[var(--text-strong)] outline-none focus:border-[var(--brand-gold)]"
+            className="h-10 w-full rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-primary)] px-3 text-xs text-[var(--text-strong)] outline-none focus:border-[var(--brand-gold)]"
           >
-            <option value="all">كل المقاسات المتاحة</option>
+            <option value="all">كل المقاسات</option>
             {allSizes.map((sz) => (
               <option key={sz} value={sz}>
                 مقاس {sz}
@@ -155,9 +150,9 @@ export function CollectionClient({
 
       {/* Results */}
       {filtered.length === 0 ? (
-        <div className="mt-10 rounded-[4px] border border-[var(--border-subtle)] bg-[var(--bg-surface)] py-16 text-center">
-          <p className="text-base font-bold text-[var(--text-strong)]">
-            لم يتم العثور على فساتين مطابقة لهذا البحث
+        <div className="mt-8 rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] py-14 text-center">
+          <p className="text-sm font-bold text-[var(--text-strong)]">
+            لم يتم العثور على فساتين مطابقة
           </p>
           <button
             type="button"
@@ -168,13 +163,13 @@ export function CollectionClient({
               setSizeFilter("all");
               setQuery("");
             }}
-            className="mt-4 h-10 rounded-[4px] bg-[var(--brand-gold)] px-5 text-xs font-semibold text-[#FAF7F2]"
+            className="mt-4 h-10 rounded-full bg-[var(--brand-gold)] px-6 text-xs font-semibold text-[#F7F6F3]"
           >
             عرض جميع الفساتين
           </button>
         </div>
       ) : (
-        <div className="mt-8 grid grid-cols-2 gap-3.5 sm:grid-cols-3 lg:grid-cols-4 md:gap-5">
+        <div className="mt-7 grid grid-cols-2 gap-x-3.5 gap-y-6 sm:grid-cols-3 sm:gap-x-5 sm:gap-y-8 lg:grid-cols-4">
           {filtered.map((dress) => (
             <DressCard key={dress.code} dress={dress} />
           ))}

@@ -265,7 +265,7 @@ export function DressSpinViewer({
           turnTo(side);
         }}
         style={{ touchAction: zoomed ? "none" : "pan-y" }}
-        className={`relative mx-auto aspect-[3/4] max-h-[min(56svh,440px)] w-full overflow-hidden rounded-[4px] border border-[var(--border-subtle)] bg-[var(--bg-surface)] outline-none select-none focus-visible:ring-2 focus-visible:ring-[var(--brand-gold)] sm:max-h-[min(64svh,540px)] ${
+        className={`relative mx-auto aspect-[3/4] max-h-[min(56svh,440px)] w-full overflow-hidden rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] outline-none select-none focus-visible:ring-2 focus-visible:ring-[var(--brand-gold)] sm:max-h-[min(64svh,540px)] ${
           zoomed
             ? "cursor-zoom-out"
             : viewMode === "3d"
@@ -382,7 +382,7 @@ export function DressSpinViewer({
         {/* Top-Right Minimal Dress Code Tag */}
         <span
           dir="ltr"
-          className="pointer-events-none absolute right-3 top-3 z-10 rounded-[3px] border border-[var(--border-subtle)] bg-[var(--bg-primary)]/90 px-2 py-0.5 font-en text-[10px] font-semibold tracking-[0.16em] text-[var(--text-primary)] backdrop-blur-xs"
+          className="pointer-events-none absolute right-3 top-3 z-10 rounded-full border border-[var(--border-subtle)] bg-[var(--bg-primary)]/90 px-2.5 py-0.5 font-en text-[10px] font-semibold tracking-[0.14em] text-[var(--text-primary)] backdrop-blur-xs"
         >
           {dress.code}
         </span>
@@ -394,7 +394,7 @@ export function DressSpinViewer({
               type="button"
               onClick={() => setLightboxOpen(true)}
               aria-label="تكبير بملء الشاشة"
-              className="inline-flex size-8 items-center justify-center rounded-[4px] border border-[var(--border-subtle)] bg-[var(--bg-primary)]/90 text-[var(--text-primary)] backdrop-blur-xs transition-colors hover:border-[var(--brand-gold)] hover:text-[var(--brand-gold)]"
+              className="inline-flex size-8.5 items-center justify-center rounded-full border border-[var(--border-subtle)] bg-[var(--bg-primary)]/90 text-[var(--text-primary)] backdrop-blur-xs transition-colors hover:border-[var(--brand-gold)] hover:text-[var(--brand-gold)]"
             >
               <Maximize2 className="size-3.5" strokeWidth={1.5} />
             </button>
@@ -402,7 +402,7 @@ export function DressSpinViewer({
               type="button"
               onClick={() => setZoomed((z) => !z)}
               aria-label={zoomed ? "إلغاء التكبير" : "تكبير تفاصيل التطريز"}
-              className={`inline-flex size-8 items-center justify-center rounded-[4px] border backdrop-blur-xs transition-colors ${
+              className={`inline-flex size-8.5 items-center justify-center rounded-full border backdrop-blur-xs transition-colors ${
                 zoomed
                   ? "border-[var(--brand-gold)] bg-[var(--brand-gold)] text-[#F7F6F3]"
                   : "border-[var(--border-subtle)] bg-[var(--bg-primary)]/90 text-[var(--text-primary)] hover:border-[var(--brand-gold)] hover:text-[var(--brand-gold)]"
@@ -420,7 +420,7 @@ export function DressSpinViewer({
             <button
               type="button"
               onClick={() => turnTo(side === "front" ? "back" : "front")}
-              className="inline-flex h-8 items-center gap-1.5 rounded-[4px] border border-[var(--border-subtle)] bg-[var(--bg-primary)]/90 px-3 text-[11px] font-semibold text-[var(--text-primary)] backdrop-blur-xs transition-colors hover:border-[var(--brand-gold)] hover:text-[var(--brand-gold)]"
+              className="inline-flex h-8.5 items-center gap-1.5 rounded-full border border-[var(--border-subtle)] bg-[var(--bg-primary)]/90 px-3.5 text-[11px] font-semibold text-[var(--text-primary)] backdrop-blur-xs transition-colors hover:border-[var(--brand-gold)] hover:text-[var(--brand-gold)]"
             >
               <RotateCw className="size-3 text-[var(--brand-gold)]" strokeWidth={1.75} />
               <span>{side === "front" ? "لفّي لمشاهدة الظهر" : "العودة للوجه الأمامي"}</span>
