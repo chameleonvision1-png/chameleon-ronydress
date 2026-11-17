@@ -143,6 +143,43 @@ body {
   animation: drawerSlideInRight 0.28s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
+@keyframes coutureFloatSlow {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+  50% {
+    transform: translate3d(0, -9px, 0) rotate(1.8deg);
+  }
+}
+
+@keyframes coutureFloatReverse {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(0deg) scaleX(-1);
+  }
+  50% {
+    transform: translate3d(0, 8px, 0) rotate(-1.8deg) scaleX(-1);
+  }
+}
+
+.animate-couture-float {
+  animation: coutureFloatSlow 7.5s ease-in-out infinite;
+  will-change: transform;
+}
+
+.animate-couture-float-mirror {
+  animation: coutureFloatReverse 8.5s ease-in-out infinite;
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-couture-float,
+  .animate-couture-float-mirror {
+    animation: none;
+  }
+}
+
 ::view-transition-group(.morph) {
   animation-duration: 420ms;
   animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);

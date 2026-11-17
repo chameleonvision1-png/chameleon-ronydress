@@ -5,6 +5,7 @@ import { ViewTransition } from "react";
 import { Maximize2, RotateCw, X, ZoomIn, ZoomOut } from "lucide-react";
 import type { Dress } from "@/lib/types";
 import { useLockBodyScroll } from "@/lib/useLockBodyScroll";
+import { CoutureSpiritBackdrop } from "./CoutureSpiritBackdrop";
 
 function clamp(v: number, min: number, max: number) {
   return Math.max(min, Math.min(max, v));
@@ -83,9 +84,12 @@ export function DressSpinViewer({
     velocity: 0,
     raf: 0,
     last: 0,
+    pointerId: -1,
     dragging: false,
+    scrolling: false,
     moved: false,
     startX: 0,
+    startY: 0,
     startAngle: 0,
   });
 
@@ -222,15 +226,13 @@ export function DressSpinViewer({
           if ((e.target as HTMLElement).closest("button")) return;
           if (zoomed || viewMode !== "3d") return;
           const a = animRef.current;
-          a.dragging = true;
+          a.pointerId = e.pointerId;
+          a.dragging = false;
+          a.scrolling = false;
           a.moved = false;
           a.startX = e.clientX;
+          a.startY = e.clientY;
           a.startAngle = a.value;
-          if (a.raf) cancelAnimationFrame(a.raf);
-          a.raf = 0;
-          a.last = 0;
-          a.velocity = 0;
-          e.currentTarget.setPointerCapture(e.pointerId);
         }}
         onPointerMove={(e) => {
           if (zoomed) {
@@ -241,14 +243,33 @@ export function DressSpinViewer({
             return;
           }
           const a = animRef.current;
-          if (!a.dragging || viewMode !== "3d") return;
+          if (a.pointerId !== e.pointerId || a.scrolling || viewMode !== "3d") return;
           const dx = e.clientX - a.startX;
-          if (Math.abs(dx) > 5) a.moved = true;
+          const dy = e.clientY - a.startY;
+          if (!a.dragging) {
+            if (Math.abs(dy) > 7 && Math.abs(dy) >= Math.abs(dx)) {
+              a.scrolling = true;
+              return;
+            }
+            if (Math.abs(dx) > 7 && Math.abs(dx) > Math.abs(dy) * 1.15) {
+              a.dragging = true;
+              a.moved = true;
+              if (a.raf) cancelAnimationFrame(a.raf);
+              a.raf = 0;
+              a.last = 0;
+              a.velocity = 0;
+              e.currentTarget.setPointerCapture(e.pointerId);
+            } else {
+              return;
+            }
+          }
           a.value = clamp(a.startAngle + dx * 0.52, a.startAngle - 210, a.startAngle + 210);
           applyAngle(a.value);
         }}
         onPointerUp={(e) => {
           const a = animRef.current;
+          if (a.pointerId !== e.pointerId) return;
+          a.pointerId = -1;
           if (!a.dragging) return;
           a.dragging = false;
           if (e.currentTarget.hasPointerCapture(e.pointerId)) {
@@ -260,12 +281,13 @@ export function DressSpinViewer({
         }}
         onPointerCancel={() => {
           const a = animRef.current;
+          a.pointerId = -1;
           if (!a.dragging) return;
           a.dragging = false;
           turnTo(side);
         }}
         style={{ touchAction: zoomed ? "none" : "pan-y" }}
-        className={`relative mx-auto aspect-[3/4] max-h-[min(56svh,440px)] w-full overflow-hidden rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] outline-none select-none focus-visible:ring-2 focus-visible:ring-[var(--brand-gold)] sm:max-h-[min(64svh,540px)] ${
+        className={`relative mx-auto aspect-[3/4] max-h-[410px] w-full overflow-hidden rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] outline-none select-none focus-visible:ring-2 focus-visible:ring-[var(--brand-gold)] sm:max-h-[530px] ${
           zoomed
             ? "cursor-zoom-out"
             : viewMode === "3d"
@@ -277,6 +299,14 @@ export function DressSpinViewer({
           if (zoomed) setZoomed(false);
         }}
       >
+        {/* Enchanted Couture Spirit Creatures & Soft Aura Behind Model */}
+        {!zoomed && viewMode !== "detail" && (
+          <CoutureSpiritBackdrop
+            dressCode={dress.code}
+            occasion={dress.occasions[0]}
+            variant="stage"
+          />
+        )}
         {/* Soft Overhead Studio Wash */}
         <div
           aria-hidden="true"

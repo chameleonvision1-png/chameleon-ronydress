@@ -7,6 +7,7 @@ import { ArrowLeft, CalendarCheck, Heart } from "lucide-react";
 import type { Dress, Occasion } from "@/lib/types";
 import { useLockBodyScroll } from "@/lib/useLockBodyScroll";
 import { OCCASION_LABELS_AR, STATUS_LABELS_AR } from "@/lib/whatsapp";
+import { CoutureSpiritBackdrop } from "./CoutureSpiritBackdrop";
 import { useShortlist } from "./ShortlistProvider";
 
 interface AtelierOrbitCarouselProps {
@@ -112,14 +113,27 @@ export function AtelierOrbitCarousel({ dresses }: AtelierOrbitCarouselProps) {
     setUserStopped(true);
   }, []);
 
-  // Measure single-viewport stage cleanly
+  const lockedMobileVhRef = React.useRef(0);
+  const lastMeasuredWRef = React.useRef(0);
+
+  // Measure single-viewport stage cleanly (lock mobile vh against URL-bar scroll resize jumps!)
   React.useLayoutEffect(() => {
     const el = stageRef.current;
     if (!el) return;
     const measure = () => {
       const w = Math.max(320, Math.round(el.clientWidth));
-      const vh = typeof window !== "undefined" ? window.innerHeight : 880;
+      const rawVh = typeof window !== "undefined" ? window.innerHeight : 880;
       const isMobile = w < 640;
+
+      // Ignore mobile Chrome/Safari URL-bar show/hide resize events where width hasn't changed
+      if (isMobile && lastMeasuredWRef.current > 0 && Math.abs(w - lastMeasuredWRef.current) < 2) {
+        return;
+      }
+      lastMeasuredWRef.current = w;
+      if (isMobile) {
+        lockedMobileVhRef.current = rawVh;
+      }
+      const vh = isMobile ? lockedMobileVhRef.current || rawVh : rawVh;
 
       const gownH = isMobile
         ? clamp(Math.round(vh * 0.48), 348, 435)
@@ -407,7 +421,14 @@ export function AtelierOrbitCarousel({ dresses }: AtelierOrbitCarouselProps) {
         }}
       />
 
-      <div className="mx-auto flex w-full max-w-7xl flex-1 flex-col justify-between px-4 py-4 sm:px-6 sm:py-6 lg:px-8">
+      {/* Enchanted Morphing Couture Spirit Creatures & Soft Aura */}
+      <CoutureSpiritBackdrop
+        dressCode={activeDress.code}
+        occasion={activeDress.occasions[0]}
+        variant="hero"
+      />
+
+      <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-1 flex-col justify-between px-4 py-4 sm:px-6 sm:py-6 lg:px-8">
         {/* Symmetric Single-Line Eyebrow & Couture Headline */}
         <header className="mx-auto flex max-w-3xl flex-col items-center gap-1 text-center">
           <p
@@ -641,6 +662,12 @@ function CoutureLiftModal({
   const backShadeRef = React.useRef<HTMLSpanElement | null>(null);
   const shadowRef = React.useRef<HTMLSpanElement | null>(null);
   const closingRef = React.useRef(false);
+  const sourceRectRef = React.useRef(sourceRect);
+  const onLiftRef = React.useRef(onLift);
+  React.useEffect(() => {
+    sourceRectRef.current = sourceRect;
+    onLiftRef.current = onLift;
+  });
 
   const [shown, setShown] = React.useState(false);
   const [side, setSide] = React.useState<"front" | "back">("front");
@@ -652,8 +679,11 @@ function CoutureLiftModal({
     velocity: 0,
     raf: 0,
     last: 0,
+    pointerId: -1,
     dragging: false,
+    scrolling: false,
     startX: 0,
+    startY: 0,
     startAngle: 0,
   });
 
@@ -725,10 +755,10 @@ function CoutureLiftModal({
     [applyAngle, reduced],
   );
 
-  // Lift garment smoothly off the Hero stage (exact MO WORLD Detail animation)
+  // Lift garment smoothly off the Hero stage ONCE on open (never re-trigger on mobile resize/scroll!)
   React.useLayoutEffect(() => {
     const figure = figureRef.current;
-    const from = sourceRect();
+    const from = sourceRectRef.current();
     const cur = angleRef.current;
     let animation: Animation | null = null;
     if (figure && from && !reduced && from.width > 0) {
@@ -737,7 +767,7 @@ function CoutureLiftModal({
       const dx = from.left + from.width / 2 - (to.left + to.width / 2);
       const dy = from.top - to.top;
       const lift = Math.min(72, Math.abs(dy) * 0.22 + 24);
-      onLift(true);
+      onLiftRef.current(true);
       animation = figure.animate(
         [
           { transform: `translate(${dx}px, ${dy}px) scale(${scale})` },
@@ -755,16 +785,16 @@ function CoutureLiftModal({
       cancelAnimationFrame(raf);
       animation?.cancel();
       cancelAnimationFrame(cur.raf);
-      onLift(false);
+      onLiftRef.current(false);
     };
-  }, [onLift, reduced, sourceRect]);
+  }, [reduced]);
 
   const dismiss = React.useCallback(() => {
     if (closingRef.current) return;
     closingRef.current = true;
     setShown(false);
     const figure = figureRef.current;
-    const to = sourceRect();
+    const to = sourceRectRef.current();
     if (!figure || !to || reduced || to.width === 0) {
       onClose();
       return;
@@ -782,7 +812,7 @@ function CoutureLiftModal({
       { duration: 480, easing: "cubic-bezier(.45,0,.55,1)", fill: "forwards" },
     );
     animation.onfinish = () => onClose();
-  }, [onClose, reduced, sourceRect]);
+  }, [onClose, reduced]);
 
   React.useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -809,15 +839,24 @@ function CoutureLiftModal({
       aria-modal="true"
       aria-labelledby={titleId}
       data-modal-scroll
-      className="no-scrollbar fixed inset-0 z-50 flex items-center justify-center overflow-y-auto p-4 sm:p-6"
+      className="no-scrollbar fixed inset-0 z-50 overflow-y-auto overscroll-contain px-4 sm:px-6"
     >
       <div
         aria-hidden="true"
         onClick={dismiss}
-        className={`fixed inset-0 bg-[var(--bg-primary)]/92 backdrop-blur-xl transition-opacity duration-300 ${
+        className={`fixed inset-0 bg-[var(--bg-primary)]/94 backdrop-blur-xl transition-opacity duration-300 ${
           shown ? "opacity-100" : "opacity-0"
         }`}
       />
+
+      {/* Ambient Floating Couture Spirit Creatures Behind Lifted Gown */}
+      <div className="pointer-events-none fixed inset-0 z-[1]">
+        <CoutureSpiritBackdrop
+          dressCode={dress.code}
+          occasion={dress.occasions[0]}
+          variant="stage"
+        />
+      </div>
 
       <button
         type="button"
@@ -840,63 +879,86 @@ function CoutureLiftModal({
         </svg>
       </button>
 
-      <div className="relative z-10 my-auto grid w-full max-w-5xl items-center gap-6 pt-10 md:grid-cols-[minmax(0,1fr)_minmax(0,25rem)] md:gap-10 md:pt-4">
-        {/* 3D Two-Sided Drag-Flip Stage (Zero Ghosting) */}
-        <div
-          dir="ltr"
-          ref={figureRef}
-          className="relative mx-auto aspect-[2/3] h-[min(46vh,440px)] max-h-full origin-top sm:h-[min(60vh,540px)]"
-        >
-          <span
-            ref={shadowRef}
-            aria-hidden="true"
-            style={{
-              transform: "translateX(-50%) scaleX(1)",
-              background:
-                "radial-gradient(ellipse at center, rgba(11,9,12,0.28) 0%, rgba(11,9,12,0.08) 48%, transparent 74%)",
-            }}
-            className="pointer-events-none absolute bottom-1 left-1/2 h-5 w-[62%] rounded-full"
-          />
-
+      <div className="relative z-10 mx-auto flex min-h-full w-full max-w-5xl items-start justify-center pt-14 pb-8 md:items-center md:py-8">
+        <div className="grid w-full items-center gap-6 md:grid-cols-[minmax(0,1fr)_minmax(0,25rem)] md:gap-10">
+          {/* 3D Two-Sided Drag-Flip Stage (Rock-Solid Pixel Height — Zero Mobile Scroll Jump!) */}
           <div
-            data-spin-stage
-            style={{ perspective: "1400px" }}
-            onPointerDown={(e) => {
-              const a = angleRef.current;
-              a.dragging = true;
-              a.startX = e.clientX;
-              a.startAngle = a.value;
-              cancelAnimationFrame(a.raf);
-              a.raf = 0;
-              a.last = 0;
-              e.currentTarget.setPointerCapture(e.pointerId);
-            }}
-            onPointerMove={(e) => {
-              const a = angleRef.current;
-              if (!a.dragging) return;
-              a.value = clamp(
-                a.startAngle + (e.clientX - a.startX) * 0.48,
-                a.startAngle - 220,
-                a.startAngle + 220,
-              );
-              applyAngle(a.value);
-            }}
-            onPointerUp={(e) => {
-              const a = angleRef.current;
-              if (!a.dragging) return;
-              a.dragging = false;
-              if (e.currentTarget.hasPointerCapture(e.pointerId)) {
-                e.currentTarget.releasePointerCapture(e.pointerId);
-              }
-              const facing = ((a.value % 360) + 360) % 360;
-              turnTo(facing > 90 && facing < 270 ? "back" : "front");
-            }}
-            onPointerCancel={() => {
-              angleRef.current.dragging = false;
-              turnTo(side);
-            }}
-            className="absolute inset-0 cursor-grab touch-pan-y active:cursor-grabbing"
+            dir="ltr"
+            ref={figureRef}
+            className="relative mx-auto aspect-[2/3] h-[340px] origin-top sm:h-[490px]"
           >
+            <span
+              ref={shadowRef}
+              aria-hidden="true"
+              style={{
+                transform: "translateX(-50%) scaleX(1)",
+                background:
+                  "radial-gradient(ellipse at center, rgba(11,9,12,0.28) 0%, rgba(11,9,12,0.08) 48%, transparent 74%)",
+              }}
+              className="pointer-events-none absolute bottom-1 left-1/2 h-5 w-[62%] rounded-full"
+            />
+
+            <div
+              data-spin-stage
+              style={{ perspective: "1400px" }}
+              onPointerDown={(e) => {
+                if (e.button !== 0 && e.pointerType === "mouse") return;
+                const a = angleRef.current;
+                a.pointerId = e.pointerId;
+                a.dragging = false;
+                a.scrolling = false;
+                a.startX = e.clientX;
+                a.startY = e.clientY;
+                a.startAngle = a.value;
+              }}
+              onPointerMove={(e) => {
+                const a = angleRef.current;
+                if (a.pointerId !== e.pointerId || a.scrolling) return;
+                const dx = e.clientX - a.startX;
+                const dy = e.clientY - a.startY;
+                if (!a.dragging) {
+                  if (Math.abs(dy) > 7 && Math.abs(dy) >= Math.abs(dx)) {
+                    a.scrolling = true;
+                    return;
+                  }
+                  if (Math.abs(dx) > 7 && Math.abs(dx) > Math.abs(dy) * 1.15) {
+                    a.dragging = true;
+                    cancelAnimationFrame(a.raf);
+                    a.raf = 0;
+                    a.last = 0;
+                    e.currentTarget.setPointerCapture(e.pointerId);
+                  } else {
+                    return;
+                  }
+                }
+                a.value = clamp(
+                  a.startAngle + dx * 0.48,
+                  a.startAngle - 220,
+                  a.startAngle + 220,
+                );
+                applyAngle(a.value);
+              }}
+              onPointerUp={(e) => {
+                const a = angleRef.current;
+                if (a.pointerId !== e.pointerId) return;
+                a.pointerId = -1;
+                if (!a.dragging) return;
+                a.dragging = false;
+                if (e.currentTarget.hasPointerCapture(e.pointerId)) {
+                  e.currentTarget.releasePointerCapture(e.pointerId);
+                }
+                const facing = ((a.value % 360) + 360) % 360;
+                turnTo(facing > 90 && facing < 270 ? "back" : "front");
+              }}
+              onPointerCancel={() => {
+                const a = angleRef.current;
+                a.pointerId = -1;
+                if (!a.dragging) return;
+                a.dragging = false;
+                turnTo(side);
+              }}
+              className="absolute inset-0 cursor-grab touch-pan-y active:cursor-grabbing"
+            >
             <div ref={spinRef} className="absolute inset-0 [transform-style:preserve-3d]">
               <div className="absolute inset-0 [backface-visibility:hidden]">
                 {frontShot && (
@@ -1069,6 +1131,7 @@ function CoutureLiftModal({
               </button>
             </div>
           </div>
+        </div>
         </div>
       </div>
     </div>,

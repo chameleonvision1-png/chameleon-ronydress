@@ -7,6 +7,7 @@ import { Heart } from "lucide-react";
 import type { Dress } from "@/lib/types";
 import { OCCASION_LABELS_AR, STATUS_LABELS_AR } from "@/lib/whatsapp";
 import { formatPrice } from "@/lib/utils";
+import { CoutureSpiritBackdrop } from "./CoutureSpiritBackdrop";
 import { useShortlist } from "./ShortlistProvider";
 
 export function DressCard({ dress }: { dress: Dress }) {
@@ -21,7 +22,12 @@ export function DressCard({ dress }: { dress: Dress }) {
     <article className="group flex flex-col">
       {/* Soft Rounded-2xl Couture Studio Frame */}
       <div className="relative aspect-[3/4] w-full overflow-hidden rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] transition-colors group-hover:border-[var(--brand-gold)]/65">
-        <Link href={`/dress/${dress.code}`} className="block size-full p-2.5 sm:p-3.5">
+        <CoutureSpiritBackdrop
+          dressCode={dress.code}
+          occasion={dress.occasions[0]}
+          variant="card"
+        />
+        <Link href={`/dress/${dress.code}`} className="relative z-[1] block size-full p-2.5 sm:p-3.5">
           <ViewTransition name={`dress-${dress.code}`} share="morph" default="none">
             <div className="relative size-full">
               <span
