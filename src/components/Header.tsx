@@ -38,7 +38,8 @@ const SITE_LINKS = [
   { href: "/contact", labelAr: "العنوان ومواعيد الأتيليه" },
 ];
 
-export function Header({ announcementAr }: { announcementAr?: string }) {
+export function Header(_props: { announcementAr?: string }) {
+  void _props;
   const pathname = usePathname();
   const { items, setDrawerOpen } = useShortlist();
   const { theme, toggleTheme } = useTheme();
@@ -63,14 +64,6 @@ export function Header({ announcementAr }: { announcementAr?: string }) {
 
   return (
     <>
-      {announcementAr && (
-        <div className="hidden border-b border-[var(--border-subtle)] bg-[var(--bg-surface)] px-3 py-1.5 text-center sm:block">
-          <p className="mx-auto max-w-2xl truncate text-[11px] font-medium text-[var(--text-primary)] sm:text-xs">
-            {announcementAr}
-          </p>
-        </div>
-      )}
-
       <header className="sticky top-0 z-40 border-b border-[var(--border-subtle)] bg-[var(--bg-primary)]/95 backdrop-blur-md">
         <div
           dir="ltr"

@@ -1,64 +1,64 @@
 @import "tailwindcss";
 
-/* Rony Dress — Haute Couture Design System Tokens (Light & Dark Salon Modes) */
+/* Rony Dress — Studio Alabaster & Obsidian Velvet Design System (MO WORLD Architectural Standard) */
 :root {
-  --bg-primary: #FAF7F2;         /* Couture Alabaster */
-  --bg-surface: #F2ECE2;         /* Warm Silk Stone */
-  --bg-stage: #F5EFE6;           /* Salon Runway Surface */
+  --bg-primary: #F7F6F3;         /* Crisp Studio Alabaster */
+  --bg-surface: #EEECE7;         /* Soft Architectural Stone */
+  --bg-stage: #F7F6F3;           /* Seamless Studio Stage */
   --bg-card: #FFFFFF;
-  --border-subtle: #E2D8C9;      /* 1px Hairline Silk Border */
-  --text-primary: #1B1518;       /* Deep Espresso Obsidian */
-  --text-strong: #120E10;
-  --text-muted: #6B5D62;         /* Muted Taupe-Plum */
-  --brand-gold: #B89040;         /* Measured Rony Dress Logo Gold */
-  --brand-gold-hover: #98742D;   /* Burnished Brass Hover */
+  --border-subtle: #DDD9D0;      /* Crisp 1px Hairline */
+  --text-primary: #110F12;       /* Deep Couture Obsidian */
+  --text-strong: #0B090C;
+  --text-muted: #5E5B61;         /* Neutral Editorial Slate-Taupe */
+  --brand-gold: #9E7830;         /* High-Contrast Burnished Couture Gold */
+  --brand-gold-hover: #826122;   /* Deep Antique Brass Hover */
   --brand-champagne: #D7B98E;
   --brand-nude: #E8CFC5;
   --brand-rose: #C98F9B;
   --brand-brown: #3A2930;
-  --brand-black: #120E10;
+  --brand-black: #0B090C;
   --radius-ui: 4px;
 
-  --background: #FAF7F2;
-  --foreground: #1B1518;
-  --card: #F2ECE2;
-  --card-foreground: #1B1518;
-  --muted: #F2ECE2;
-  --muted-foreground: #6B5D62;
-  --border: #E2D8C9;
-  --ring: #B89040;
-  --primary: #B89040;
-  --primary-foreground: #FAF7F2;
+  --background: #F7F6F3;
+  --foreground: #110F12;
+  --card: #EEECE7;
+  --card-foreground: #110F12;
+  --muted: #EEECE7;
+  --muted-foreground: #5E5B61;
+  --border: #DDD9D0;
+  --ring: #9E7830;
+  --primary: #9E7830;
+  --primary-foreground: #F7F6F3;
 }
 
 [data-theme="dark"] {
-  --bg-primary: #0E0B0E;         /* Deep Obsidian Salon Velvet */
-  --bg-surface: #171216;         /* Elevated Velvet Card */
-  --bg-stage: #130F12;           /* Dark Salon Stage */
-  --bg-card: #1D171C;
-  --border-subtle: #2C2329;      /* Dark Brass-Plum Seam */
-  --text-primary: #FAF7F2;       /* Couture Alabaster */
+  --bg-primary: #0B0A0C;         /* Deep Obsidian Dark */
+  --bg-surface: #141216;         /* Carbon Velvet Card */
+  --bg-stage: #0B0A0C;           /* Seamless Dark Stage */
+  --bg-card: #1A171D;
+  --border-subtle: #252129;      /* Dark Hairline Seam */
+  --text-primary: #F7F6F3;       /* Studio Alabaster */
   --text-strong: #FFFFFF;
-  --text-muted: #AC9DA3;         /* Muted Champagne-Grey */
-  --brand-gold: #D7B98E;         /* Luminous Champagne Brass */
-  --brand-gold-hover: #E5CBA5;
+  --text-muted: #9A959E;         /* Muted Silver-Taupe */
+  --brand-gold: #CCA968;         /* Luminous Champagne Brass */
+  --brand-gold-hover: #DEC084;
   --brand-champagne: #B89040;
   --brand-nude: #3A2930;
   --brand-rose: #C98F9B;
-  --brand-brown: #FAF7F2;
-  --brand-black: #080608;
+  --brand-brown: #F7F6F3;
+  --brand-black: #060507;
   --radius-ui: 4px;
 
-  --background: #0E0B0E;
-  --foreground: #FAF7F2;
-  --card: #171216;
-  --card-foreground: #FAF7F2;
-  --muted: #171216;
-  --muted-foreground: #AC9DA3;
-  --border: #2C2329;
-  --ring: #D7B98E;
-  --primary: #D7B98E;
-  --primary-foreground: #0E0B0E;
+  --background: #0B0A0C;
+  --foreground: #F7F6F3;
+  --card: #141216;
+  --card-foreground: #F7F6F3;
+  --muted: #141216;
+  --muted-foreground: #9A959E;
+  --border: #252129;
+  --ring: #CCA968;
+  --primary: #CCA968;
+  --primary-foreground: #0B0A0C;
 }
 
 @theme inline {
@@ -94,8 +94,8 @@ body {
 
 .font-editorial {
   font-family: var(--font-editorial), Georgia, serif;
-  line-height: 1.06;
-  letter-spacing: -0.015em;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
 }
 
 .font-ar-ui {
@@ -108,9 +108,9 @@ body {
 
 .micro-label {
   font-family: var(--font-en), system-ui, sans-serif;
-  font-size: 10.5px;
+  font-size: 11px;
   font-weight: 600;
-  letter-spacing: 0.25em;
+  letter-spacing: 0.26em;
   text-transform: uppercase;
 }
 
@@ -143,9 +143,8 @@ body {
   animation: drawerSlideInRight 0.28s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
-/* React <ViewTransition share="morph" /> — smooth cutout gown enlargement into /dress/[code] */
 ::view-transition-group(.morph) {
-  animation-duration: 440ms;
+  animation-duration: 420ms;
   animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
